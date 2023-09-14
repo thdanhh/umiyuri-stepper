@@ -1,5 +1,6 @@
 import time
 import os
+import sys
 import bypass_cf
 #from undetected_chromedriver import Chrome, ChromeOptions
 from seleniumbase import Driver
@@ -7,8 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from action import attack, loot, step, item_check, exist_test
-from functions import driver_get, status_check
+from action import attack, loot, step, item_check, exist_test, delay_for_verification
+from functions import status_check
 
 def main(driver):
     bypass_cf.bypass(driver)
@@ -18,9 +19,9 @@ def main(driver):
     npc_count = 0 # tracking the number of NPC killed with the bot
     mat_count = 0 # tracking the number of materials looted with the bot
 
-    while True:
-        if not status_check():
-            break
+    status = status_check()
+    while status == "running":
+
         # Start stepping
         print("Stepping...")
         print()
@@ -29,31 +30,38 @@ def main(driver):
         if loot(driver): mat_count += 1
         if item_check(driver): item_count += 1
         if step(driver): step_count += 1
-        exist_test(driver)
 
         print(f"{step_count} steps taken in current session!")
         print(f"{item_count} items found in current session!")
         print(f"{npc_count} NPC killed in current session!")
         print(f"{mat_count} materials looted in current session!")
         print()
-        time.sleep(3)
+
+
+        print("Checking for verification...\n")
+        exist_test(driver)
+
+        status = status_check()
+        if status == 'stop':
+            break
+        delay_for_verification(time.time())
 
 if __name__ == '__main__':
-    driver = Driver(uc=True, headless2=True)
+    option_headless = False
+    if len(sys.argv[1]) > 1:
+        option_headless = True
 
-    user_agent = driver.execute_script('return navigator.userAgent;')
-    print(f'before User Agent: {user_agent}')
+    undetected = False
+    while not undetected:
+        driver = Driver(uc=True, headless2=option_headless)
+        try:
+            main(driver)
+            undetected = True
+        except TimeoutException:
+            undetected = False
+            print("bypass unsuccessful, closing and trying again")
+        finally:
+            driver.quit()
+            print("Quited driver")
 
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.63 Safari/537.36'
-    driver.execute_cdp_cmd('Network.setUserAgentOverride', {'userAgent': user_agent})
-
-    user_agent = driver.execute_script('return navigator.userAgent;')
-    print(f'after User Agent: {user_agent}')
-
-    try:
-        main(driver)
-    except TimeoutException:
-        print("bypass unsuccessful, click ""Stop"" and try again")
-
-    driver.quit()
-    print("driver quitted")
+    print("Stopped script")

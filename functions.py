@@ -13,39 +13,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from contextlib import suppress
 import streamlit as sl
+import os
 
-#Deprecated
-def driver_get():
-    # Set up chrome driver
-    # TODO: add feature to update chrome automatically
-    print("initializing driver")
-    options = ChromeOptions()
-
-    arguments = [
-            "-no-first-run",
-            "-force-color-profile=srgb",
-            "-metrics-recording-only",
-            "-password-store=basic",
-            "-use-mock-keychain",
-            "-export-tagged-pdf",
-            "-no-default-browser-check",
-            "-disable-background-mode",
-            "-enable-features=NetworkService,NetworkServiceInProcess,LoadCryptoTokenExtension,PermuteTLSExtensions",
-            "-disable-features=FlashDeprecationWarning,EnablePasswordsAccountStorage",
-            "-deny-permission-prompts",
-            "-disable-gpu"
-            "-headless=new"
-            # "-incognito"
-            # "-user-data-dir=D:\\System\\Desktop\\Undetected\\Drission_Dennis\\tmp\\"
-        ]
-    for argument in arguments:
-        options.add_argument(argument)
-
-    print("adding options argument")
-    driver = Chrome(options=options)
-
-    print("initialized driver successfully")
-    return driver
 
 def write_txt(line, content):
     lines = []
@@ -57,63 +26,38 @@ def write_txt(line, content):
 
 def status_check():
     with open("info.txt", 'r') as f:
-            lines = f.readlines()
+        lines = f.readlines()
+        try:
             status = lines[2].strip()
+        except:
+            status = 'stop'
     if status == "paused":
-        print("Paused")
-        while True:
+        print("Paused\n")
+        while status == "paused":
             time.sleep(1)
             with open("info.txt", 'r') as f:
                 lines = f.readlines()
                 status = lines[2].strip()
-            if status == "running":
-                print("Resumed")
+            if status != 'paused':
+                break
     elif status == "running":
-        time.sleep(1)
+        return "running"
     elif status == "stop":
-        return False
+        return "stop"
+    elif status == "captcha":
+        return "captcha"
     else:
-        print("Invalid status. info.txt deleted")
-        os.remove('info.txt')
-        return False
-    return True
+        print("Invalid status.")
+        write_txt(3, "stop")
+        return "stop"
+    return "running"
 
 @sl.cache_resource
-def start_subprocess(file):
+def start_subprocess(file, args=""):
     print("starting subprocess")
-    return subprocess.Popen(["python", file])
+    return subprocess.Popen(["python", file, args])
 
-def captcha(captcha_link):
-    if captcha_link.is_displayed():
-        print("Solve the captcha to continue, if you are done solving, type c to continue the loop.")
-        alert_sound()
-        toast("Verification Detected", "Solve the captcha to continue stepping")
-        while True:
-            if input().lower() == "c":
-                break
-
-def change_process_status(arr, target_status):
-    for process in psutil.process_iter():
-        with suppress(psutil.NoSuchProcess):
-            if process.name() == 'python.exe' and 'python umiyuri.py' in process.cmdline():
-                if target_status == 'pause':
-                    process.suspend()
-                if target_status == 'resume':
-                    process.resume()
-                if target_status == 'stop':
-                    process.kill()
-                arr[0] = True
-
-            if target_status == 'stop':
-#                 if process.name() == 'chrome.exe' and ('--test-type=webdriver') in process.cmdline():
-                if process.name() == 'chrome.exe':
-                    process.kill()
-                    arr[1] = True
-
-#             had_changed = True
-#             for element in arr:
-#                 if element is False:
-#                     had_changed = False
-#                     break
-#             if had_changed is True:
-#                 break
+@sl.cache_data
+def write_status():
+    write_txt(3, 'stop')
+    return False

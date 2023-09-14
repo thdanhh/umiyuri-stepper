@@ -6,7 +6,9 @@ import random
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from functions import captcha
+from win10toast import ToastNotifier
+from win11toast import toast
+from functions import status_check, write_txt
 
 def attack(driver):
     in_battle = False
@@ -34,7 +36,7 @@ def attack(driver):
                 pass
 
             try:
-                captcha(captcha)
+                exist_test(driver)
             except:
                 pass
         return True
@@ -53,8 +55,7 @@ def loot(driver):
             craft.click()  
             time.sleep(1)
             try:
-                captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")                
-                captcha(captcha)
+                exist_test(driver)
             except:
                 continue
         print("Material looted!")
@@ -98,14 +99,29 @@ def item_check(driver):
         return False
 
 def exist_test(driver):
-    print("Checking for verification...")
-    print()
-    delay = random.randint(4,7)
+    captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
+    if captcha.is_displayed():
+        print("Solve the captcha to continue, if you are done solving, type c to continue the loop.")
+        # NameError: name 'alert_sound' is not defined
+        # where is this?
+#         alert_sound()
+        toast("Verification Detected", "Solve the captcha to continue stepping")
+        with open("info.txt", 'r') as f:
+            lines = f.readlines()
+            try:
+               status = lines[2].strip()
+            except:
+               status = 'stop'
+        if status != 'stop':
+            write_txt(3, 'captcha')
+        while status_check() == "captcha" and status_check() != "stop":
+            if input().lower() == "c":
+                write_txt(3, "running")
+                break
+
+def delay_for_verification(start_time):
+    delay = random.randint(5, 10)
     print(f"{delay} seconds delayed to avoid detection, please be patient...")
     print()
-    time.sleep(delay)
-    try:
-       captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
-       captcha(captcha)
-    except:
-        pass
+    while (time.time() - start_time < delay) and status_check() != 'stop' and status_check() != 'paused':
+        time.sleep(1)

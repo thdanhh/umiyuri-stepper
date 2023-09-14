@@ -1,6 +1,6 @@
 import streamlit as sl
 import os, signal
-from functions import write_txt, start_subprocess, driver_get, change_process_status
+from functions import write_txt, write_status, start_subprocess, status_check
 import subprocess
 import psutil
 from contextlib import suppress
@@ -31,59 +31,59 @@ email = sl.text_input("Email", value=username)
 password = sl.text_input("Password", value=password, type='password')
 
 start = sl.button("Start")
-if start:
-    sl.success('Umiyuri Stepper started')
-    write_txt(1, f"{email}\n")
-    write_txt(2, f"{password}\n")
-    write_txt(3, "running")
-    with open("functions.py", 'r') as f:
-        data = f.read()
-        data = data.replace('###', 'options.headless = True')
-    with open("functions.py", 'w') as f:
-        f.write(data)
-
-    proc = start_subprocess("umiyuri.py")
-
 start_browser = sl.button("Start with browser (no headless)")
-if start_browser:
-    sl.success('Umiyuri Stepper started')
-    write_txt(1, f"{email}\n")
-    write_txt(2, f"{password}\n")
-    write_txt(3, "running")
-    with open("functions.py", 'r') as f:
-        data = f.read()
-        data = data.replace('options.headless = True', '###')
-    with open("functions.py", 'w') as f:
-        f.write(data)
-
-    proc = start_subprocess("umiyuri.py")
-
 pause = sl.button("Pause")
-if pause:
-    arr = [False]
-    change_process_status(arr, 'pause')
-    write_txt(3, "paused")
-    sl.warning("Paused")
-    print("Paused")
-
-# enable resume button
 resume = sl.button("Resume")
-if resume:
-    arr = [False]
-    change_process_status(arr, 'resume')
-    sl.success("Resumed")
-    print("Resumed")
-    write_txt(3, "running")
+
+if 'first_run' not in sl.session_state:
+    sl.session_state['first_run'] = True
+
+if sl.session_state['first_run'] is True:
+    sl.session_state['first_run'] = write_status()
+
+with open("info.txt", 'r') as f:
+    lines = f.readlines()
+    try:
+        status = lines[2].strip()
+    except:
+        status = 'stop'
+
+if status == 'captcha':
+    pass
+else:
+    if start:
+        write_txt(1, f"{email}\n")
+        write_txt(2, f"{password}\n")
+        write_txt(3, "running")
+
+        proc = start_subprocess("umiyuri.py", args="headless")
+        sl.success('Umiyuri Stepper started')
+
+    if start_browser:
+        write_txt(1, f"{email}\n")
+        write_txt(2, f"{password}\n")
+        write_txt(3, "running")
+
+        proc = start_subprocess("umiyuri.py")
+        sl.success('Umiyuri Stepper started')
+
+    if resume:
+        write_txt(3, "running")
+        sl.success("Resumed")
+        print("Resume initiated\n")
+
+    if pause:
+        write_txt(3, "paused")
+        sl.warning("Paused")
+        print("Pause initiated, waiting for current action to finish\n")
 
 
 stop = sl.button("Stop")
 if stop:
-    arr = [False, False]
-    change_process_status(arr, 'stop')
     start_subprocess.clear()
 
     sl.error("Stopped")
-    print("Stopped")
+    print("Stop initiated\n")
     write_txt(3, "stop")
 
 

@@ -14,17 +14,11 @@ def bypass(driver):
         lines = f.readlines()
         email = lines[0].strip()
         password = lines[1].strip()
-#     # Bypass cloudflare and login
-#     print("opening login page")
-#     driver.execute_script('window.open("https://web.simple-mmo.com/login", "_blank");')
-#     print("waiting to bypass")
-#     time.sleep(5)
-#     driver.switch_to.window(driver.window_handles[-1])
 
     print("opening login page")
     driver.get("https://web.simple-mmo.com/login")
     print("waiting to bypass")
-    time.sleep(3)
+    time.sleep(2)
 
     # Wait for the email field to be visible
     email_field = WebDriverWait(driver, 10).until(
@@ -48,7 +42,6 @@ def bypass(driver):
     print("login successfully")
 
     # Wait for the page to load
-    time.sleep(3)
 
     # Navigate to the travel page
     driver.get("https://web.simple-mmo.com/travel")
@@ -57,7 +50,6 @@ def bypass(driver):
     toast('Welcome to Umiyuri Stepper!')
 
     # Wait for the page to load
-    time.sleep(3)
 
     alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
     toaster = ToastNotifier()
