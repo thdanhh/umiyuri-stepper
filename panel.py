@@ -1,6 +1,6 @@
 import streamlit as sl
 import os, signal
-from functions import write_txt, start_subprocess, driver_get 
+from functions import write_txt, start_subprocess, driver_get, change_process_status
 import subprocess
 import psutil
 from contextlib import suppress
@@ -41,8 +41,7 @@ if start:
         data = data.replace('###', 'options.add_argument("--headless")')
     with open("functions.py", 'w') as f:
         f.write(data)
-    # Clearing the Screen
-    os.system('cls')
+
     proc = start_subprocess("umiyuri.py")
 
 start_browser = sl.button("Start with browser (no headless)")
@@ -56,34 +55,31 @@ if start_browser:
         data = data.replace('options.add_argument("--headless")', '###')
     with open("functions.py", 'w') as f:
         f.write(data)
-    # Clearing the Screen
-    os.system('cls')
+
     proc = start_subprocess("umiyuri.py")
 
 pause = sl.button("Pause")
 if pause:
-    sl.warning("Paused")
+    arr = [False]
+    change_process_status(arr, 'pause')
     write_txt(3, "paused")
+    sl.warning("Paused")
+    print("Paused")
+
+# enable resume button
+resume = sl.button("Resume")
+if resume:
+    arr = [False]
+    change_process_status(arr, 'resume')
+    sl.success("Resumed")
+    print("Resumed")
+    write_txt(3, "running")
 
 
 stop = sl.button("Stop")
 if stop:
     arr = [False, False]
-    for process in psutil.process_iter():
-        with suppress(psutil.NoSuchProcess):
-            if process.name() == 'chrome.exe' and ('--test-type=webdriver') in process.cmdline():
-                process.kill()
-                arr[0] = True
-            if process.name() == 'undetected_chromedriver.exe':
-                process.kill()
-                arr[1] = True
-            had_killed_all = True
-            for element in arr:
-                if element is False:
-                    had_killed_all = False
-                    break
-            if had_killed_all is True:
-                break
+    change_process_status(arr, 'stop')
     # Clearing the Screen
     os.system('cls')
 

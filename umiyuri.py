@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from action import attack, loot, step, item_check, exist_test
-from functions import status_check, driver_get
+from functions import driver_get
 
 def main():
     driver = driver_get()
@@ -18,8 +18,6 @@ def main():
     mat_count = 0 # tracking the number of materials looted with the bot
 
     while True:
-        if not status_check():
-            break
         # Start stepping
         print("Stepping...")
         print()
@@ -38,7 +36,8 @@ def main():
         time.sleep(3)
 
 if __name__ == '__main__':
-    try:
-        main()
-    except:
-        pass
+#     try:
+#         main()
+#     except:
+#         pass
+    main()
