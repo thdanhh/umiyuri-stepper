@@ -23,7 +23,6 @@ def bypass(driver):
 
     print("opening login page")
     driver.get("https://web.simple-mmo.com/login")
-    driver.save_screenshot("screenshot.png")
     print("waiting to bypass")
     time.sleep(3)
 

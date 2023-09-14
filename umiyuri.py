@@ -44,7 +44,7 @@ if __name__ == '__main__':
     user_agent = driver.execute_script('return navigator.userAgent;')
     print(f'before User Agent: {user_agent}')
 
-    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.63 Safari/537.36'
     driver.execute_cdp_cmd('Network.setUserAgentOverride', {'userAgent': user_agent})
 
     user_agent = driver.execute_script('return navigator.userAgent;')
