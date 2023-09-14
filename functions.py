@@ -17,12 +17,16 @@ import streamlit as sl
 def driver_get():
     # Set up chrome driver
     # TODO: add feature to update chrome automatically
+    print("initializing driver")
     options = ChromeOptions()
-    options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36')
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+    options.add_argument(f'user-agent={user_agent}')
     options.add_argument('--disable-popup-blocking')
-    ###
+    options.add_argument("--headless")
     options.add_argument("--test-type=webdriver")
+    print("adding options argument")
     driver = Chrome(options=options)
+    print("initialized driver successfully")
     return driver
 
 def write_txt(line, content):
@@ -33,10 +37,33 @@ def write_txt(line, content):
     with open("info.txt", "w") as f:
         f.writelines(lines)
 
+def status_check():
+    with open("info.txt", 'r') as f:
+            lines = f.readlines()
+            status = lines[2].strip()
+    if status == "paused":
+        print("Paused")
+        while True:
+            time.sleep(1)
+            with open("info.txt", 'r') as f:
+                lines = f.readlines()
+                status = lines[2].strip()
+            if status == "running":
+                print("Resumed")
+    elif status == "running":
+        time.sleep(1)
+    elif status == "stop":
+        return False
+    else:
+        print("Invalid status. info.txt deleted")
+        os.remove('info.txt')
+        return False
+    return True
+
 @sl.cache_resource
 def start_subprocess(file):
-    proc = subprocess.Popen(["python", file])
-    return proc
+    print("starting subprocess")
+    return subprocess.Popen(["python", file])
 
 def captcha(captcha_link):
     if captcha_link.is_displayed():
@@ -50,12 +77,12 @@ def captcha(captcha_link):
 def change_process_status(arr, target_status):
     for process in psutil.process_iter():
         with suppress(psutil.NoSuchProcess):
-            if process.name() == 'undetected_chromedriver.exe':
+            if process.name() == 'python.exe' and 'python umiyuri.py' in process.cmdline():
                 if target_status == 'pause':
                     process.suspend()
-                elif target_status == 'resume':
+                if target_status == 'resume':
                     process.resume()
-                elif target_status == 'stop':
+                if target_status == 'stop':
                     process.kill()
                 arr[0] = True
 
@@ -64,10 +91,10 @@ def change_process_status(arr, target_status):
                     process.kill()
                     arr[1] = True
 
-            had_changed = True
-            for element in arr:
-                if element is False:
-                    had_changed = False
-                    break
-            if had_changed is True:
-                break
+#             had_changed = True
+#             for element in arr:
+#                 if element is False:
+#                     had_changed = False
+#                     break
+#             if had_changed is True:
+#                 break

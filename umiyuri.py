@@ -5,8 +5,9 @@ from undetected_chromedriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from action import attack, loot, step, item_check, exist_test
-from functions import driver_get
+from functions import driver_get, status_check
 
 def main():
     driver = driver_get()
@@ -18,14 +19,16 @@ def main():
     mat_count = 0 # tracking the number of materials looted with the bot
 
     while True:
+        if not status_check():
+            break
         # Start stepping
         print("Stepping...")
         print()
         
-        attack(driver, npc_count)
-        loot(driver, mat_count)
-        item_check(driver, item_count)
-        step(driver, step_count)
+        if attack(driver): npc_count += 1
+        if loot(driver): mat_count += 1
+        if item_check(driver): item_count += 1
+        if step(driver): step_count += 1
         exist_test(driver)
 
         print(f"{step_count} steps taken in current session!")
@@ -34,10 +37,14 @@ def main():
         print(f"{mat_count} materials looted in current session!")
         print()
         time.sleep(3)
+    driver.quit()
 
 if __name__ == '__main__':
 #     try:
 #         main()
+#     except TimeoutException:
+#         print("bypass unsuccessful, pls try again")
 #     except:
 #         pass
+
     main()

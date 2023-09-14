@@ -80,8 +80,11 @@ stop = sl.button("Stop")
 if stop:
     arr = [False, False]
     change_process_status(arr, 'stop')
-    # Clearing the Screen
-    os.system('cls')
+    start_subprocess.clear()
+
+    sl.error("Stopped")
+    print("Stopped")
+    write_txt(3, "stop")
 
 
 delete = sl.button('Delete items screenshots')

@@ -8,8 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from functions import captcha
 
-def attack(driver, npc_count):
-    in_battle = True
+def attack(driver):
+    in_battle = False
     try:
         enemy = driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
         time.sleep(1)
@@ -19,11 +19,9 @@ def attack(driver, npc_count):
         print("Attacking...")
         attack = driver.find_element(By.XPATH, "//button[contains(text(), 'Attack')]")
         while in_battle == True:
-            try:
-                attack.click()
-                time.sleep(1)
-            except:
-                pass
+            attack.click()
+            time.sleep(1)
+
             try:
                 end = driver.find_element(By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']")
                 hp = driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
@@ -32,17 +30,18 @@ def attack(driver, npc_count):
                     print("Battle ended!")
                     print()
                     in_battle = False
-                    npc_count += 1
             except:
                 pass
+
             try:
                 captcha(captcha)
             except:
                 pass
+        return True
     except:
-        pass
+        return False
 
-def loot(driver, mat_count):
+def loot(driver):
     try:
         action = driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
         action.click()
@@ -62,11 +61,11 @@ def loot(driver, mat_count):
         print()
         time.sleep(1)
         craft.click()
-        mat_count += 1
+        return True
     except:
-        pass
+        return False
 
-def step(driver, step_count):
+def step(driver):
     try:
         step_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
@@ -77,16 +76,15 @@ def step(driver, step_count):
         else:
             time.sleep(3)
             step_button.click()
-        step_count += 1
+        return True
     except:
-        pass
+        return False
 
-def item_check(driver, item_count):
+def item_check(driver):
     try:
         found_item = driver.find_element(By.XPATH, "//*[text()='You have found an item!']")
         if found_item.text.strip() == "You have found an item!":
             print("You found an item!")
-            item_count += 1
             rand_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
             file_name = (f'item_{rand_str}.png')
             print(f"Item found! Don't forget to check your inventory. Screenshot saved.")
@@ -95,8 +93,9 @@ def item_check(driver, item_count):
                 os.makedirs(folder_path)
             file_path = os.path.join(folder_path, file_name)
             driver.save_screenshot(file_path)
+        return True
     except:
-        pass
+        return False
 
 def exist_test(driver):
     print("Checking for verification...")

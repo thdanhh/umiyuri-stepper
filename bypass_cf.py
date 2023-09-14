@@ -15,7 +15,9 @@ def bypass(driver):
         email = lines[0].strip()
         password = lines[1].strip()
     # Bypass cloudflare and login
+    print("opening login page")
     driver.execute_script('window.open("https://web.simple-mmo.com/login", "_blank");')
+    print("waiting to bypass")
     time.sleep(5)
     driver.switch_to.window(driver.window_handles[-1])
 
@@ -23,6 +25,8 @@ def bypass(driver):
     email_field = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.NAME, "email"))
     )
+    driver.get_screenshot_as_file("screenshot.png")
+
     # Enter the user's email from file or user input
     email_field.send_keys(email)
     # Wait for the password field to be visible
@@ -37,6 +41,7 @@ def bypass(driver):
     )
     # Click the login button
     login_button.click()
+    print("login successfully")
 
     # Wait for the page to load
     time.sleep(3)
