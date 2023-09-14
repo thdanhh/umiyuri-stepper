@@ -38,7 +38,7 @@ if start:
     write_txt(3, "running")
     with open("functions.py", 'r') as f:
         data = f.read()
-        data = data.replace('###', 'options.add_argument("--headless")')
+        data = data.replace('###', 'options.headless = True')
     with open("functions.py", 'w') as f:
         f.write(data)
 
@@ -52,7 +52,7 @@ if start_browser:
     write_txt(3, "running")
     with open("functions.py", 'r') as f:
         data = f.read()
-        data = data.replace('options.add_argument("--headless")', '###')
+        data = data.replace('options.headless = True', '###')
     with open("functions.py", 'w') as f:
         f.write(data)
 

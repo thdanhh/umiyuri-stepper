@@ -14,18 +14,36 @@ from selenium.webdriver.common.by import By
 from contextlib import suppress
 import streamlit as sl
 
+#Deprecated
 def driver_get():
     # Set up chrome driver
     # TODO: add feature to update chrome automatically
     print("initializing driver")
     options = ChromeOptions()
-    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
-    options.add_argument(f'user-agent={user_agent}')
-    options.add_argument('--disable-popup-blocking')
-    options.add_argument("--headless")
-    options.add_argument("--test-type=webdriver")
+
+    arguments = [
+            "-no-first-run",
+            "-force-color-profile=srgb",
+            "-metrics-recording-only",
+            "-password-store=basic",
+            "-use-mock-keychain",
+            "-export-tagged-pdf",
+            "-no-default-browser-check",
+            "-disable-background-mode",
+            "-enable-features=NetworkService,NetworkServiceInProcess,LoadCryptoTokenExtension,PermuteTLSExtensions",
+            "-disable-features=FlashDeprecationWarning,EnablePasswordsAccountStorage",
+            "-deny-permission-prompts",
+            "-disable-gpu"
+            "-headless=new"
+            # "-incognito"
+            # "-user-data-dir=D:\\System\\Desktop\\Undetected\\Drission_Dennis\\tmp\\"
+        ]
+    for argument in arguments:
+        options.add_argument(argument)
+
     print("adding options argument")
     driver = Chrome(options=options)
+
     print("initialized driver successfully")
     return driver
 
@@ -87,7 +105,8 @@ def change_process_status(arr, target_status):
                 arr[0] = True
 
             if target_status == 'stop':
-                if process.name() == 'chrome.exe' and ('--test-type=webdriver') in process.cmdline():
+#                 if process.name() == 'chrome.exe' and ('--test-type=webdriver') in process.cmdline():
+                if process.name() == 'chrome.exe':
                     process.kill()
                     arr[1] = True
 

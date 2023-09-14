@@ -1,7 +1,8 @@
-selenium==4.11.0
+
 streamlit==1.19.0
 undetected_chromedriver==3.5.3
 win10toast==0.9
 win11toast==0.32
 altair<5
 psutil==5.9.5
+seleniumbase==4.18.6
