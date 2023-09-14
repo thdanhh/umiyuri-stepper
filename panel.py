@@ -25,7 +25,7 @@ with open("info.txt", "r") as f:
     except:
         username = ""
         password = ""
-        write_txt(1, f"{username}\n{password}\n")
+        write_txt(1, f"{username}\n{password}\n\n")
 
 email = sl.text_input("Email", value=username)
 password = sl.text_input("Password", value=password, type='password')
@@ -36,10 +36,10 @@ if start:
     write_txt(1, f"{email}\n")
     write_txt(2, f"{password}\n")
     write_txt(3, "running")
-    with open("umiyuri.py", 'r') as f:
+    with open("functions.py", 'r') as f:
         data = f.read()
         data = data.replace('###', 'options.add_argument("--headless")')
-    with open("umiyuri.py", 'w') as f:
+    with open("functions.py", 'w') as f:
         f.write(data)
     # Clearing the Screen
     os.system('cls')
@@ -51,10 +51,10 @@ if start_browser:
     write_txt(1, f"{email}\n")
     write_txt(2, f"{password}\n")
     write_txt(3, "running")
-    with open("umiyuri.py", 'r') as f:
+    with open("functions.py", 'r') as f:
         data = f.read()
         data = data.replace('options.add_argument("--headless")', '###')
-    with open("umiyuri.py", 'w') as f:
+    with open("functions.py", 'w') as f:
         f.write(data)
     # Clearing the Screen
     os.system('cls')
