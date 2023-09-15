@@ -2,7 +2,6 @@ import time
 import os
 import sys
 import bypass_cf
-#from undetected_chromedriver import Chrome, ChromeOptions
 from seleniumbase import Driver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC

@@ -2,7 +2,6 @@ import time
 import os
 import win10toast
 import win11toast
-from undetected_chromedriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -41,15 +40,11 @@ def bypass(driver):
     login_button.click()
     print("login successfully")
 
-    # Wait for the page to load
-
     # Navigate to the travel page
     driver.get("https://web.simple-mmo.com/travel")
 
     print("Welcome to Umiyuri Stepper!")
     toast('Welcome to Umiyuri Stepper!')
-
-    # Wait for the page to load
 
     alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
     toaster = ToastNotifier()

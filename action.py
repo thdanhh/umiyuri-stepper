@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from win10toast import ToastNotifier
 from win11toast import toast
 from functions import status_check, write_txt
+import winsound
 
 def attack(driver):
     in_battle = False
@@ -102,9 +103,8 @@ def exist_test(driver):
     captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
     if captcha.is_displayed():
         print("Solve the captcha to continue, if you are done solving, type c to continue the loop.")
-        # NameError: name 'alert_sound' is not defined
-        # where is this?
-#         alert_sound()
+        alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
+        toaster = ToastNotifier()
         toast("Verification Detected", "Solve the captcha to continue stepping")
         with open("info.txt", 'r') as f:
             lines = f.readlines()
