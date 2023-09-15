@@ -26,8 +26,8 @@ def main(driver):
         print("Stepping...")
         print()
         
-        if attack(driver): npc_count += 1
         if loot(driver): mat_count += 1
+        if attack(driver): npc_count += 1
         if item_check(driver): item_count += 1
         if step(driver): step_count += 1
 
@@ -39,8 +39,10 @@ def main(driver):
         print()
 
         print("Checking for verification...\n")
-        exist_test(driver, 'step')
-
+        try:
+            exist_test(driver, 'step')
+        except:
+            pass
         status = status_check()
         if status == 'stop':
             break

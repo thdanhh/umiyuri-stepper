@@ -10,20 +10,21 @@ from win10toast import ToastNotifier
 from win11toast import toast
 from functions import status_check, write_txt
 import winsound
+from selenium.webdriver.common.action_chains import ActionChains
 
 def attack(driver):
     in_battle = False
     try:
         enemy = driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
-        time.sleep(1)
-        enemy.click()
         print("NPC found! Battle started!")
+        time.sleep(1)
+        open_in_new_tab(driver, enemy)
         in_battle = True
         print("Attacking...")
         attack = driver.find_element(By.XPATH, "//button[contains(text(), 'Attack')]")
         while in_battle == True:
             attack.click()
-            time.sleep(1)
+            time.sleep(0.5)
 
             try:
                 end = driver.find_element(By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']")
@@ -35,13 +36,18 @@ def attack(driver):
                     in_battle = False
             except:
                 pass
-
             try:
                 exist_test(driver, 'battle')
             except:
                 pass
+        # Close tab
+        handles = driver.window_handles
+        driver.close()
+        # Switch back to the old tab or window
+        driver.switch_to.window(handles[0])
+        time.sleep(1)
         return True
-    except:
+    except: 
         return False
 
 def loot(driver):
@@ -49,16 +55,13 @@ def loot(driver):
         action = driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
         action.click()
         print("Material found!")
-        time.sleep(1)
         craft = driver.find_element(By.XPATH, '//button[@id="crafting_button"]')
         print("Looting...")
         while not craft.text.strip() == "Press here to close":
             craft.click()  
-            time.sleep(1)
+            time.sleep(0.5)
         print("Material looted!")
         print()
-        time.sleep(1)
-        craft.click()
         return True
     except:
         return False
@@ -127,3 +130,13 @@ def delay_for_verification(start_time):
     print()
     while (time.time() - start_time < delay) and status_check() != 'stop' and status_check() != 'paused':
         time.sleep(1)
+
+def open_in_new_tab(driver, element):
+    link = element.get_attribute("href")
+    driver.execute_script(f"window.open('{link}', '_blank');")
+    time.sleep(1)
+    # Get all windows
+    handles = driver.window_handles
+    # Loop through until we find a new window handle
+    driver.switch_to.window(handles[1])
+    time.sleep(1)
