@@ -106,6 +106,7 @@ def exist_test(driver, captcha_type):
         print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
         alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
         toaster = ToastNotifier()
+        alert_sound()
         toast("Verification Detected", "Solve the captcha to continue stepping")
         with open("info.txt", 'r') as f:
             lines = f.readlines()

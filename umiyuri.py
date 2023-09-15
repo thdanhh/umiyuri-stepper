@@ -38,7 +38,6 @@ def main(driver):
         timer(start_time)
         print()
 
-
         print("Checking for verification...\n")
         exist_test(driver, 'step')
 
