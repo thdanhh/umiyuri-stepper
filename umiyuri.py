@@ -39,10 +39,8 @@ def main(driver):
         print()
 
         print("Checking for verification...\n")
-        try:
-            exist_test(driver, 'step')
-        except:
-            pass
+        exist_test(driver, 'step')
+        
         status = status_check()
         if status == 'stop':
             break
