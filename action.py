@@ -37,7 +37,8 @@ def attack(driver):
                 pass
 
             try:
-                exist_test(driver)
+                captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
+                exist_test(driver, captcha)
             except:
                 pass
         return True
@@ -55,10 +56,6 @@ def loot(driver):
         while not craft.text.strip() == "Press here to close":
             craft.click()  
             time.sleep(1)
-            try:
-                exist_test(driver)
-            except:
-                continue
         print("Material looted!")
         print()
         time.sleep(1)
@@ -99,8 +96,7 @@ def item_check(driver):
     except:
         return False
 
-def exist_test(driver):
-    captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
+def exist_test(driver, captcha):
     if captcha.is_displayed():
         print("Solve the captcha to continue, if you are done solving, type c to continue the loop.")
         alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)

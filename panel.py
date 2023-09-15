@@ -31,7 +31,7 @@ email = sl.text_input("Email", value=username)
 password = sl.text_input("Password", value=password, type='password')
 
 start_browser = sl.button("Start")
-start = sl.button("Start with --headless")
+start = sl.button("Start headless (no browser)")
 pause = sl.button("Pause")
 resume = sl.button("Resume")
 

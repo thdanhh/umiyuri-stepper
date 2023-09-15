@@ -38,7 +38,8 @@ def main(driver):
 
 
         print("Checking for verification...\n")
-        exist_test(driver)
+        captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
+        exist_test(driver, captcha)
 
         status = status_check()
         if status == 'stop':
