@@ -37,8 +37,7 @@ def attack(driver):
                 pass
 
             try:
-                captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
-                exist_test(driver, captcha)
+                exist_test(driver, 'battle')
             except:
                 pass
         return True
@@ -96,9 +95,15 @@ def item_check(driver):
     except:
         return False
 
-def exist_test(driver, captcha):
+def exist_test(driver, captcha_type):
+    captcha = ''
+    if captcha_type == 'step':
+        captcha = captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
+    elif captcha_type == 'battle':
+        captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
+
     if captcha.is_displayed():
-        print("Solve the captcha to continue, if you are done solving, type c to continue the loop.")
+        print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
         alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
         toaster = ToastNotifier()
         toast("Verification Detected", "Solve the captcha to continue stepping")
