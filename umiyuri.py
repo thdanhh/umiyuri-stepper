@@ -6,7 +6,7 @@ from seleniumbase import Driver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 from action import attack, loot, step, item_check, exist_test, delay_for_verification
 from functions import status_check, timer
 
@@ -39,7 +39,10 @@ def main(driver):
         print()
 
         print("Checking for verification...\n")
-        exist_test(driver, 'step')
+        try:
+            exist_test(driver, 'step')
+        except StaleElementReferenceException:
+            driver.save_screenshot('screenshot.png')
         status = status_check()
         if status == 'stop':
             break

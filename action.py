@@ -63,12 +63,8 @@ def loot(driver):
         print("Material looted!")
         print()
         craft.click()
-        while True:
-            try:
-                element = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
-                return True
-            except:
-                continue
+        time.sleep(2)
+        return True
     except:
         return False
 
