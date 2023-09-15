@@ -112,13 +112,13 @@ def exist_test(driver, captcha_type):
         captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
 
     if captcha.is_displayed():
+        # Automatically open verify page on browser
+        os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
         print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
         alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
         toaster = ToastNotifier()
         alert_sound()
         toast("Verification Detected", "Solve the captcha to continue stepping")
-        # Automatically open verify page on browser
-        os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
         with open("info.txt", 'r') as f:
             lines = f.readlines()
             try:
