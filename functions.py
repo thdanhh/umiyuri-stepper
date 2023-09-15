@@ -1,13 +1,11 @@
 import subprocess
 import sys
 import time
-import winsound
 import random
 import string
 import psutil
 from win10toast import ToastNotifier
 from win11toast import toast
-from undetected_chromedriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -51,6 +49,11 @@ def status_check():
         write_txt(3, "stop")
         return "stop"
     return "running"
+
+def timer(start_time):
+    mins, secs = divmod(time.time() - start_time, 60) 
+    hours, mins = divmod(mins, 60)
+    print("Umiyuri Stepper has been running for %02d:%02d:%02d" % (hours, mins, secs))
 
 @sl.cache_resource
 def start_subprocess(file, args=""):

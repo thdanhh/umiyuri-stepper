@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from action import attack, loot, step, item_check, exist_test, delay_for_verification
-from functions import status_check
+from functions import status_check, timer
 
 def main(driver):
     bypass_cf.bypass(driver)
@@ -19,6 +19,7 @@ def main(driver):
     mat_count = 0 # tracking the number of materials looted with the bot
 
     status = status_check()
+    start_time = time.time()
     while status == "running":
 
         # Start stepping
@@ -34,6 +35,7 @@ def main(driver):
         print(f"{item_count} items found in current session!")
         print(f"{npc_count} NPC killed in current session!")
         print(f"{mat_count} materials looted in current session!")
+        timer(start_time)
         print()
 
 
