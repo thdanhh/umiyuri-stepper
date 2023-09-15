@@ -9,8 +9,8 @@ umiyuri-stepper is a Python stepping bot for a certain stepping game utilizing S
 ```bash
 git clone https://github.com/thdanhh/umiyuri-stepper
 ```
-2. Run *run.bat* to start the streamlit panel.
-3. Press *Start* to run the bot (or you can press *Start with --headless* to run the bot in a headless environment)
+2. Run *run.bat* to start the panel.
+3. Press *Start* to run the bot (or you can press *Start headless (no browser)* to run the bot in a headless environment)
 
 ## Contributing
 
