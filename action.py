@@ -117,6 +117,8 @@ def exist_test(driver, captcha_type):
         toaster = ToastNotifier()
         alert_sound()
         toast("Verification Detected", "Solve the captcha to continue stepping")
+        # Automatically open verify page on browser
+        os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
         with open("info.txt", 'r') as f:
             lines = f.readlines()
             try:

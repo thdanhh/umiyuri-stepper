@@ -40,7 +40,6 @@ def main(driver):
 
         print("Checking for verification...\n")
         exist_test(driver, 'step')
-        
         status = status_check()
         if status == 'stop':
             break
