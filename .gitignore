@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 info.txt
+pages/items/
 
 # C extensions
 *.so
