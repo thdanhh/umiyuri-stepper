@@ -12,7 +12,7 @@ from functions import timer
 from status import status_check
 from captcha import exist_test, delay_for_verification, notify_captcha
 
-def main(driver, auto_open_captcha):
+def run_driver(driver, auto_open_captcha):
     bypass_cf.bypass(driver)
 
     item_count = 0 # tracking the number of items found with the bot
@@ -52,7 +52,7 @@ def main(driver, auto_open_captcha):
         if status == 'stop':
             break
 
-if __name__ == '__main__':
+def main():
     print('parsing arguments')
     option_headless = False
     auto_open_captcha = False
@@ -64,23 +64,36 @@ if __name__ == '__main__':
             if sys.argv[i] == "auto_open_captcha":
                 auto_open_captcha = True
 
-
     undetected = False
     try_count = 0
     BYPASS_LIMIT = 3
-    while not undetected and try_count < BYPASS_LIMIT:
+    while not undetected and try_count < BYPASS_LIMIT and status_check() != 'stop':
         driver = Driver(uc=True, headless2=option_headless)
         try:
-            main(driver, auto_open_captcha)
+            run_driver(driver, auto_open_captcha)
             undetected = True
         except TimeoutException:
             undetected = False
             print("bypass unsuccessful, closing and trying again")
+
             try_count += 1
             if try_count >= BYPASS_LIMIT:
                 print("bypass took too many tries, ensure that you have a stable connection")
-        finally:
-            print("quiting driver")
-            driver.quit()
+                break
 
+        except Exception as error:
+            print()
+            prRed("An error occurred: ")
+            print(error)
+            print("quiting driver from exception")
+            driver.quit()
+            return
+
+        print("quiting driver")
+        driver.quit()
+
+def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
+
+if __name__ == '__main__':
+    main()
     print("stopping script\n")
