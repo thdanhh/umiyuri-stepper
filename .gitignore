@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 info.txt
 pages/items/
+screenshot.png
 
 # C extensions
 *.so

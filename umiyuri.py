@@ -85,6 +85,8 @@ def main():
             print()
             prRed("An error occurred: ")
             print(error)
+            print("Saving a screenshot of the browser when the exception occurred")
+            driver.save_screeshot("screenshot.png")
             print("quiting driver from exception")
             driver.quit()
             return
