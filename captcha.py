@@ -8,45 +8,52 @@ from win10toast import ToastNotifier
 from win11toast import toast
 from status import status_check, write_status_to_txt, read_status_from_txt
 
-def delay_for_verification(start_time):
-    delay = random.randint(5, 10)
-    print(f"{delay} seconds delayed to avoid detection, please be patient...")
-    print()
-    while (time.time() - start_time < delay) and status_check() != 'stop' and status_check() != 'paused':
-        time.sleep(1)
+class CaptchaHandler():
+    def __init__(self, driver):
+        self.driver = driver
 
-def exist_test(driver, captcha_type, captcha):
-    print("Checking for verification...\n")
-    try:
-        if captcha_type == 'step':
-            captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
-        elif captcha_type == 'battle':
-            captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
-        return captcha.is_displayed()
-    except NoSuchElementException or StaleElementReferenceException:
-        return False
+    def delay_for_verification(self, start_time):
+        delay = random.randint(5, 10)
+        print(f"{delay} seconds delayed to avoid detection, please be patient...")
+        print()
+        while (time.time() - start_time < delay):
+            status = status_check()
+            if status == 'stop' or status == 'paused':
+                break
+            time.sleep(1)
 
-def notify_captcha(captcha, auto_open_captcha):
-    # Automatically open verify page on browser
-    if auto_open_captcha:
-        os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
+    def exist_test(self, captcha_type):
+        print("Checking for verification...\n")
+        try:
+            if captcha_type == 'step':
+                self.captcha = self.driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
+            elif captcha_type == 'battle':
+                self.captcha = self.driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
+            return self.captcha.is_displayed()
+        except NoSuchElementException or StaleElementReferenceException:
+            return False
 
-    print("Captcha found, solve the captcha to continue.")
-    print("https://web.simple-mmo.com/i-am-not-a-bot")
+    def notify_captcha(self, auto_open_captcha):
+        # Automatically open verify page on browser
+        if auto_open_captcha:
+            os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
 
-    alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
-    toaster = ToastNotifier()
-    alert_sound()
-    toast("Verification Detected", "Solve the captcha to continue stepping")
+        print("Captcha found, solve the captcha to continue.")
+        print("https://web.simple-mmo.com/i-am-not-a-bot")
 
-    status = read_status_from_txt()
-    if status == 'stop':
-        return
+        alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
+        alert_sound()
 
-    write_status_to_txt("captcha")
-    while read_status_from_txt() == "captcha":
-        if len(input("Press enter to continue...")) >= 0:
-            if read_status_from_txt() == 'stop':
-                return
-            write_status_to_txt("running")
+        status = read_status_from_txt()
+        if status == 'stop':
             return
+
+        write_status_to_txt("captcha")
+        status = "captcha"
+        while status == 'captcha':
+            if len(input("Press enter to continue...\n")) >= 0:
+                status = read_status_from_txt()
+                if status == 'stop' or status == 'paused':
+                    return
+                write_status_to_txt("running")
+                return

@@ -13,14 +13,14 @@ from win11toast import toast
 from functions import write_txt
 import winsound
 from status import status_check
-from captcha import exist_test, notify_captcha
 
-def attack(driver, auto_open_captcha):
+# UmiyuriStepper.attack()
+def attack(self):
     in_battle = False
 
     # Find enemy
     try:
-        enemy = driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
+        enemy = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
     except NoSuchElementException:
         return False
     print("NPC found! Battle started!")
@@ -29,7 +29,7 @@ def attack(driver, auto_open_captcha):
     time.sleep(2)
 
     # Find attack button
-    attack = WebDriverWait(driver, 10).until(
+    attack = WebDriverWait(self.driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
     )
     while in_battle == True:
@@ -43,38 +43,38 @@ def attack(driver, auto_open_captcha):
         attack.click()
         time.sleep(0.5)
 
-        try:
-            # Enemy's hp
-            hp = driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
+        # Enemy's hp
+        hp = self.driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
 
-            if hp.text != '':
-                print(f"Enemy hp: {hp.text}")
+        if hp.text != '':
+            print(f"Enemy hp: {hp.text}")
 
-            if hp.text == '':
-                print("Enemy killed")
-                end = WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']"))
-                )
-                end.click()
-                print("Battle ended!")
-                print()
-                in_battle = False
-        except NoSuchElementException or ElementNotInteractableException:
-            pass
+        if hp.text == '':
+            print("Enemy killed")
+            # Check for captcha
+            if self.captcha_handler.exist_test('battle'):
+                self.captcha_handler.notify_captcha()
+                return True
 
-        # Check for captcha
-        captcha = None
-        if exist_test(driver, 'battle', captcha):
-            notify_captcha(captcha, auto_open_captcha)
+            # End battle
+            end = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located((By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']"))
+            )
+            end.click()
+            print("Battle ended!")
+            print()
+            in_battle = False
+
         time.sleep(1)
     return True
 
-def loot(driver):
+# UmiyuriStepper.loot()
+def loot(self):
     try:
-        action = driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
+        gather = driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
     except:
         return False
-    action.click()
+    gather.click()
     print("Material found!")
     craft = driver.find_element(By.XPATH, '//button[@id="crafting_button"]')
     print("Looting...")
@@ -87,9 +87,9 @@ def loot(driver):
     time.sleep(2)
     return True
 
-def step(driver):
+def step(self):
     try:
-        step_button = WebDriverWait(driver, 10).until(
+        step_button = WebDriverWait(self.driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
         )
     except:
@@ -102,9 +102,10 @@ def step(driver):
         step_button.click()
     return True
 
-def item_check(driver):
+# UmiyuriStepper.item_check
+def item_check(self):
     try:
-        found_item = driver.find_element(By.XPATH, "//*[text()='You have found an item!']")
+        found_item = self.driver.find_element(By.XPATH, "//*[text()='You have found an item!']")
     except:
         return False
     if found_item.text.strip() == "You have found an item!":
@@ -116,20 +117,21 @@ def item_check(driver):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         file_path = os.path.join(folder_path, file_name)
-        driver.save_screenshot(file_path)
+        self.driver.save_screenshot(file_path)
         return True
 
+# UmiyuriStepper.open_in_new_tab()
 # open new tab with link containing element specified in argument
 # not in use
-def open_in_new_tab(driver, element):
+def open_in_new_tab(self, element):
     link = element.get_attribute("href")
-    print("before exe" + driver.current_window_handle)
-    driver.execute_script(f"window.open('{link}', '_blank');")
+    print("before exe" + self.driver.current_window_handle)
+    self.driver.execute_script(f"window.open('{link}', '_blank');")
     time.sleep(1)
     # Get all windows
-    handles = driver.window_handles
-    print("after exe before sw to" + driver.current_window_handle)
+    handles = self.driver.window_handles
+    print("after exe before sw to" + self.driver.current_window_handle)
     # Loop through until we find a new window handle
-    driver.switch_to.window(handles[1])
-    print("after sw to" + driver.current_window_handle)
+    self.driver.switch_to.window(handles[1])
+    print("after sw to" + self.driver.current_window_handle)
     time.sleep(1)
