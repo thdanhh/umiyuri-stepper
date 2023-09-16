@@ -31,7 +31,7 @@ password = sl.text_input("Password", value=password, type='password')
 
 start = sl.button("Start")
 start_headless = sl.button("Start headless (no browser)")
-auto_open_captcha = sl.checkbox("Open verify page automatically")
+auto_open_captcha = sl.checkbox("Open verify page automatically (stop bot to take effect)")
 pause = sl.button("Pause")
 resume = sl.button("Resume")
 stop = sl.button("Stop")

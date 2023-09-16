@@ -54,6 +54,7 @@ def main(driver, auto_open_captcha):
             break
 
 if __name__ == '__main__':
+    print('parsing arguments')
     option_headless = False
     auto_open_captcha = False
     argc = len(sys.argv)
@@ -63,6 +64,8 @@ if __name__ == '__main__':
                 option_headless = True
             if sys.argv[i] == "auto_open_captcha":
                 auto_open_captcha = True
+
+
     undetected = False
     try_count = 0
     BYPASS_LIMIT = 3

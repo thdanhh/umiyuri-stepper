@@ -52,6 +52,7 @@ def bypass(driver):
     # Navigate to the travel page
     print("navigating to travel page")
     driver.get("https://web.simple-mmo.com/travel")
+    print()
 
     print("Welcome to Umiyuri Stepper!")
     toast('Welcome to Umiyuri Stepper!')
