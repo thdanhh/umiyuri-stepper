@@ -57,7 +57,7 @@ def attack(self):
             print("Enemy killed")
             # Check for captcha
             if self.captcha_handler.exist_test('battle'):
-                self.captcha_handler.notify_captcha()
+                self.captcha_handler.notify_captcha(self.auto_open_captcha)
                 self.driver.get("https://web.simple-mmo.com/travel")
                 return True
 
