@@ -26,6 +26,7 @@ def find_enemy_while_stepping(self):
 
 # UmiyuriStepper.attack()
 def attack(self):
+    print("Entering battle")
     in_battle = True
 
     # Find attack button

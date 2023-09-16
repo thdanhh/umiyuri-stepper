@@ -48,10 +48,10 @@ def bypass(self):
     login_button.click()
     print("login successfully")
 
-    # Navigate to the travel page
-    print("navigating to travel page")
-    self.driver.get("https://web.simple-mmo.com/travel")
-    print()
+#     # Navigate to the travel page
+#     print("navigating to travel page")
+#     self.driver.get("https://web.simple-mmo.com/travel")
+#     print()
 
     print("Welcome to Umiyuri Stepper!")
 

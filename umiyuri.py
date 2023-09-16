@@ -11,7 +11,7 @@ import battle
 import quests
 import bypass_cf
 import action
-from functions import get_time_elapsed_from
+from functions import get_time_elapsed_from, print_elapsed_time
 from status import status_check
 from captcha import CaptchaHandler
 
@@ -60,10 +60,10 @@ class UmiyuriStepper():
                         print("bypass took too many tries, ensure that you have a stable connection")
                         break
                 else:
-                    self.driver.save_screenshot(f"{get_time_elapsed_from(self.start_time)}.png")
+                    self.driver.save_screenshot(f"{int(time.time())}.png")
                     raise
             except:
-                self.driver.save_screenshot(f"{get_time_elapsed_from(self.start_time)}.png")
+                self.driver.save_screenshot(f"{int(time.time())}.png")
                 raise
 
             print("quiting driver")
@@ -83,19 +83,18 @@ class UmiyuriStepper():
         self.npc_count = 0 # tracking the number of NPC killed with the bot
         self.mat_count = 0 # tracking the number of materials looted with the bot
 
+        # Update status before entering loop
         self.status = status_check()
         self.start_time = time.time()
-
-        self.battle()
-        self.quests()
-
         # Main loop
         while self.status == "running":
-
             # Start stepping
             print("Stepping...")
             print()
-            if get_time_elapsed_from(self.start_time) % 3600 == 0:
+
+            self.elapsed_time = get_time_elapsed_from(self.start_time)
+            if self.elapsed_time % 3600 == 0 or self.elapsed_time < 1:
+                print("Spending EP and QP points if maxed")
                 self.battle()
                 self.quests()
             if self.loot(): self.item_count += 1
@@ -113,7 +112,8 @@ class UmiyuriStepper():
             print(f"{self.item_count} materials looted in current session!")
 
             print()
-            get_time_elapsed_from(self.start_time)
+            self.elapsed_time = get_time_elapsed_from(self.start_time)
+            print_elapsed_time(self.elapsed_time)
             print()
 
             self.captcha_handler.delay_for_verification(time.time())
