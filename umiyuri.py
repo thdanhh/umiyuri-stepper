@@ -72,14 +72,18 @@ def main():
         try:
             run_driver(driver, auto_open_captcha)
             undetected = True
-        except TimeoutException:
-            undetected = False
-            print("bypass unsuccessful, closing and trying again")
+        except TimeoutException as timeout_err:
+            print(timeout_err.msg)
+            if timeout_err.msg == "Bypass failed":
+                undetected = False
+                print("bypass unsuccessful, closing and trying again")
 
-            try_count += 1
-            if try_count >= BYPASS_LIMIT:
-                print("bypass took too many tries, ensure that you have a stable connection")
-                break
+                try_count += 1
+                if try_count >= BYPASS_LIMIT:
+                    print("bypass took too many tries, ensure that you have a stable connection")
+                    break
+            else:
+                raise
 
         except Exception as error:
             print()

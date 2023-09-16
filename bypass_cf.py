@@ -36,8 +36,8 @@ def bypass(driver):
         )
         # Enter the user's password from file or user input
         password_field.send_keys(password)
-    except TimeoutException:
-        raise TimeoutException
+    except TimeoutException as error:
+        raise TimeoutException(msg="Bypass failed")
 
     # Wait for the login button to be clickable
     login_button = WebDriverWait(driver, 10).until(

@@ -45,7 +45,7 @@ def notify_captcha(captcha, auto_open_captcha):
 
     write_status_to_txt("captcha")
     while read_status_from_txt() == "captcha":
-        if input("Press enter to continue..."):
+        if len(input("Press enter to continue...")) >= 0:
             if read_status_from_txt() == 'stop':
                 return
             write_status_to_txt("running")
