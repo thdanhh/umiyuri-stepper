@@ -52,7 +52,7 @@ def attack(driver, auto_open_captcha):
 
             if hp.text == '':
                 print("Enemy killed")
-                end = WebDriverWait(driver, 1).until(
+                end = WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']"))
                 )
                 end.click()

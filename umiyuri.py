@@ -82,8 +82,10 @@ def main():
                     print("bypass took too many tries, ensure that you have a stable connection")
                     break
             else:
+                driver.save_screenshot("screenshot.png")
                 raise
         except:
+            driver.save_screenshot("screenshot.png")
             raise
 
         print("quiting driver")
