@@ -31,7 +31,7 @@ def quests(self):
     incomplete_quest.click()
     time.sleep(0.5)
 
-    print("Performing quests")
+
     while current_qp > 0:
         if status_check() == 'stop':
             print("Stop signal received, exiting QP loop")
@@ -39,6 +39,7 @@ def quests(self):
         perform_button = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Perform Quest')]"))
         )
+        print("Performing quests")
         perform_button.click()
         if self.captcha_handler.exist_test('quests'):
             self.captcha_handler.notify_captcha(self.auto_open_captcha)
