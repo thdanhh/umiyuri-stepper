@@ -30,7 +30,7 @@ email = sl.text_input("Email", value=username)
 password = sl.text_input("Password", value=password, type='password')
 
 start = sl.button("Start")
-start_headless = sl.button("Start headless (no browser)")
+start_debug = sl.button("Start (debug)")
 auto_open_captcha = sl.checkbox("Open verify page automatically (stop bot to take effect)")
 pause = sl.button("Pause")
 resume = sl.button("Resume")
@@ -53,15 +53,15 @@ if read_status_from_txt() != 'captcha':
         write_txt("info.txt", 2, f"{password}\n")
         write_status_to_txt('running')
 
+        args.append("headless")
+
         proc = start_subprocess("umiyuri.py", args=args)
         sl.success('Umiyuri Stepper started')
 
-    if start_headless:
+    if start_debug:
         write_txt("info.txt", 1, f"{email}\n")
         write_txt("info.txt", 2, f"{password}\n")
         write_status_to_txt('running')
-
-        args.append("headless")
 
         proc = start_subprocess("umiyuri.py", args=args)
         sl.success('Umiyuri Stepper started')
