@@ -17,29 +17,41 @@ from captcha import exist_test, notify_captcha
 
 def attack(driver, auto_open_captcha):
     in_battle = False
+
+    # Find enemy
     try:
         enemy = driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
     except NoSuchElementException:
         return False
     print("NPC found! Battle started!")
     enemy.click()
-    time.sleep(2)
-#     open_in_new_tab(driver, enemy)
-    # opening in new tab introduce some unresolved bug
-    # exception: NoSuchElementException, StaleElementReferenceException
-
     in_battle = True
+    time.sleep(2)
+
+    # Find attack button
     attack = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
     )
-    while in_battle == True and status_check() != 'stop':
+    while in_battle == True:
+        # Check for script stop signal
+        if status_check() == 'stop':
+            print("Stop signal received, exiting attack loop")
+            break
+
+        # Click the attack button
         print("Attacking...")
         attack.click()
         time.sleep(0.5)
 
         try:
+            # Enemy's hp
             hp = driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
+
+            if hp.text != '':
+                print(f"Enemy hp: {hp.text}")
+
             if hp.text == '':
+                print("Enemy killed")
                 end = WebDriverWait(driver, 1).until(
                     EC.visibility_of_element_located((By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']"))
                 )
@@ -50,16 +62,10 @@ def attack(driver, auto_open_captcha):
         except NoSuchElementException or ElementNotInteractableException:
             pass
 
+        # Check for captcha
         captcha = None
         if exist_test(driver, 'battle', captcha):
             notify_captcha(captcha, auto_open_captcha)
-
-        # Close tab
-#         handles = driver.window_handles
-#         driver.close()
-#         # Switch back to the old tab or window
-#         driver.switch_to.window(handles[0])
-# exception: selenium.common.exceptions.InvalidSessionIdException
         time.sleep(1)
     return True
 

@@ -39,8 +39,3 @@ def timer(start_time):
 def start_subprocess(file, args=[]):
     print("starting subprocess")
     return subprocess.Popen(["python", file] + args)
-
-# @sl.cache_data
-# def write_status():
-#     write_txt(3, 'stop')
-#     return False

@@ -73,7 +73,6 @@ def main():
             run_driver(driver, auto_open_captcha)
             undetected = True
         except TimeoutException as timeout_err:
-            print(timeout_err.msg)
             if timeout_err.msg == "Bypass failed":
                 undetected = False
                 print("bypass unsuccessful, closing and trying again")
@@ -84,7 +83,6 @@ def main():
                     break
             else:
                 raise
-
         except:
             raise
 

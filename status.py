@@ -18,9 +18,3 @@ def status_check():
             if status != 'paused':
                 break
     return status
-#     elif status == "running":
-#         return "running"
-#     elif status == "stop":
-#         return "stop"
-#     elif status == "captcha":
-#         return "captcha"

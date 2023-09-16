@@ -59,3 +59,4 @@ def bypass(driver):
 
     alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
     toaster = ToastNotifier()
+    print()

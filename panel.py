@@ -37,12 +37,6 @@ resume = sl.button("Resume")
 stop = sl.button("Stop")
 delete = sl.button('Delete items screenshots')
 
-# if 'first_run' not in sl.session_state:
-#     sl.session_state['first_run'] = True
-#
-# if sl.session_state['first_run'] is True:
-#     sl.session_state['first_run'] = write_status_to_txt('stop')
-
 if read_status_from_txt() != 'captcha':
     args = []
     if auto_open_captcha:
