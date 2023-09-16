@@ -25,7 +25,7 @@ class CaptchaHandler():
         try:
             if captcha_type == 'step':
                 self.captcha = self.driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
-            elif captcha_type == 'battle':
+            elif captcha_type == 'battle' or 'quests':
                 self.captcha = self.driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
             return self.captcha.is_displayed()
         except NoSuchElementException or StaleElementReferenceException:

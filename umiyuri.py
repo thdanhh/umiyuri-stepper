@@ -7,6 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, NoSuchElementException
 
+import battle
+import quests
 import bypass_cf
 import action
 from functions import get_time_elapsed_from
@@ -22,6 +24,8 @@ class UmiyuriStepper():
     loot = action.loot
     step = action.step
     item_check = action.item_check
+    battle = battle.battle
+    quests = quests.quests
 
     open_in_new_tab = action.open_in_new_tab
 
@@ -82,13 +86,18 @@ class UmiyuriStepper():
         self.status = status_check()
         self.start_time = time.time()
 
+        self.battle()
+        self.quests()
+
         # Main loop
         while self.status == "running":
 
             # Start stepping
             print("Stepping...")
             print()
-
+            if get_time_elapsed_from(self.start_time) % 3600 == 0:
+                self.battle()
+                self.quests()
             if self.loot(): self.item_count += 1
             if self.find_enemy_while_stepping(): self.npc_count += 1
             if self.item_check(): self.item_count += 1
