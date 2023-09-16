@@ -33,7 +33,7 @@ def attack(driver, auto_open_captcha):
     attack = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
     )
-    while in_battle == True:
+    while in_battle == True and status_check() != 'stop':
         attack.click()
         time.sleep(0.5)
 

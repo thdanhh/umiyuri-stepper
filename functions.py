@@ -28,7 +28,6 @@ def read_txt(file, line_count):
         while count < line_count:
             line = f.readline()
             count += 1
-    print(line)
     return line.strip()
 
 def timer(start_time):

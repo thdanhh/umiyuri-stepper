@@ -1,4 +1,5 @@
 import string
+import time
 from functions import write_txt, read_txt
 
 def read_status_from_txt():
@@ -16,14 +17,10 @@ def status_check():
             status = read_status_from_txt()
             if status != 'paused':
                 break
-    elif status == "running":
-        return "running"
-    elif status == "stop":
-        return "stop"
-    elif status == "captcha":
-        return "captcha"
-    else:
-        print("Invalid status.")
-        write_status_to_txt()
-        return "stop"
-    return "running"
+    return status
+#     elif status == "running":
+#         return "running"
+#     elif status == "stop":
+#         return "stop"
+#     elif status == "captcha":
+#         return "captcha"

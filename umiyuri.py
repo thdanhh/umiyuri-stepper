@@ -79,7 +79,7 @@ if __name__ == '__main__':
             if try_count >= BYPASS_LIMIT:
                 print("bypass took too many tries, ensure that you have a stable connection")
         finally:
+            print("quiting driver")
             driver.quit()
-            print("quited driver")
 
     print("stopping script\n")

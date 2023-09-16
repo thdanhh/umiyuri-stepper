@@ -22,7 +22,7 @@ def exist_test(driver, captcha_type, captcha):
         elif captcha_type == 'battle':
             captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
         return captcha.is_displayed()
-    except NoSuchElementException:
+    except NoSuchElementException or StaleElementReferenceException:
         return False
 
 def notify_captcha(captcha, auto_open_captcha):
@@ -33,6 +33,7 @@ def notify_captcha(captcha, auto_open_captcha):
     print("Captcha found")
     print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
     print("https://web.simple-mmo.com/i-am-not-a-bot")
+
     alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
     toaster = ToastNotifier()
     alert_sound()
