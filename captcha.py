@@ -31,8 +31,7 @@ def notify_captcha(captcha, auto_open_captcha):
     if auto_open_captcha:
         os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
 
-    print("Captcha found")
-    print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
+    print("Captcha found, solve the captcha to continue.")
     print("https://web.simple-mmo.com/i-am-not-a-bot")
 
     alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
@@ -46,7 +45,7 @@ def notify_captcha(captcha, auto_open_captcha):
 
     write_status_to_txt("captcha")
     while read_status_from_txt() == "captcha":
-        if input().lower() == 'c':
+        if input("Press enter to continue..."):
             if read_status_from_txt() == 'stop':
                 return
             write_status_to_txt("running")
