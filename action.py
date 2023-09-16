@@ -6,49 +6,60 @@ import random
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 from win10toast import ToastNotifier
 from win11toast import toast
-from functions import status_check, write_txt
+from functions import write_txt
 import winsound
-from selenium.webdriver.common.action_chains import ActionChains
+from status import status_check
+from captcha import exist_test, notify_captcha
 
-def attack(driver):
+def attack(driver, auto_open_captcha):
     in_battle = False
     try:
         enemy = driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
-        print("NPC found! Battle started!")
-        time.sleep(1)
-        open_in_new_tab(driver, enemy)
-        in_battle = True
-        print("Attacking...")
-        attack = driver.find_element(By.XPATH, "//button[contains(text(), 'Attack')]")
-        while in_battle == True:
-            attack.click()
-            time.sleep(0.5)
-
-            try:
-                end = driver.find_element(By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']")
-                hp = driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
-                if hp.text == '':
-                    end.click()
-                    print("Battle ended!")
-                    print()
-                    in_battle = False
-            except:
-                pass
-            try:
-                exist_test(driver, 'battle')
-            except:
-                pass
-        # Close tab
-        handles = driver.window_handles
-        driver.close()
-        # Switch back to the old tab or window
-        driver.switch_to.window(handles[0])
-        time.sleep(1)
-        return True
-    except: 
+    except NoSuchElementException:
         return False
+    print("NPC found! Battle started!")
+    enemy.click()
+    time.sleep(2)
+#     open_in_new_tab(driver, enemy)
+    # opening in new tab introduce some unresolved bug
+    # exception: NoSuchElementException, StaleElementReferenceException
+
+    in_battle = True
+    print("Attacking...")
+    attack = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
+    )
+    while in_battle == True:
+        attack.click()
+        time.sleep(0.5)
+
+        captcha = None
+        if exist_test(driver, 'battle', captcha):
+            notify_captcha(captcha, auto_open_captcha)
+
+        try:
+            end = driver.find_element(By.XPATH, "//a[@class='mt-2 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm']")
+            hp = driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
+            if hp.text == '':
+                end.click()
+                print("Battle ended!")
+                print()
+                in_battle = False
+        except NoSuchElementException:
+            pass
+
+        # Close tab
+#         handles = driver.window_handles
+#         driver.close()
+#         # Switch back to the old tab or window
+#         driver.switch_to.window(handles[0])
+# exception: selenium.common.exceptions.InvalidSessionIdException
+        time.sleep(1)
+    return True
 
 def loot(driver):
     try:
@@ -100,47 +111,17 @@ def item_check(driver):
     except:
         return False
 
-def exist_test(driver, captcha_type):
-    captcha = ''
-    if captcha_type == 'step':
-        captcha = captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")
-    elif captcha_type == 'battle':
-        captcha = driver.find_element(By.XPATH, "//*[contains(text(), 'Press here to verify')]")
-
-    if captcha.is_displayed():
-        # Automatically open verify page on browser
-        os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
-        print("Solve the captcha to continue, if you are done solving, type c then enter to continue the loop.")
-        alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
-        toaster = ToastNotifier()
-        alert_sound()
-        toast("Verification Detected", "Solve the captcha to continue stepping")
-        with open("info.txt", 'r') as f:
-            lines = f.readlines()
-            try:
-               status = lines[2].strip()
-            except:
-               status = 'stop'
-        if status != 'stop':
-            write_txt(3, 'captcha')
-        while status_check() == "captcha" and status_check() != "stop":
-            if input().lower() == "c":
-                write_txt(3, "running")
-                break
-
-def delay_for_verification(start_time):
-    delay = random.randint(5, 10)
-    print(f"{delay} seconds delayed to avoid detection, please be patient...")
-    print()
-    while (time.time() - start_time < delay) and status_check() != 'stop' and status_check() != 'paused':
-        time.sleep(1)
-
+# open new tab with link containing element specified in argument
+# not in use
 def open_in_new_tab(driver, element):
     link = element.get_attribute("href")
+    print("before exe" + driver.current_window_handle)
     driver.execute_script(f"window.open('{link}', '_blank');")
     time.sleep(1)
     # Get all windows
     handles = driver.window_handles
+    print("after exe before sw to" + driver.current_window_handle)
     # Loop through until we find a new window handle
     driver.switch_to.window(handles[1])
+    print("after sw to" + driver.current_window_handle)
     time.sleep(1)

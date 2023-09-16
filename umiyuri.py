@@ -6,11 +6,13 @@ from seleniumbase import Driver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
-from action import attack, loot, step, item_check, exist_test, delay_for_verification
-from functions import status_check, timer
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, NoSuchElementException
+from action import attack, loot, step, item_check
+from functions import timer
+from status import status_check
+from captcha import exist_test, delay_for_verification, notify_captcha
 
-def main(driver):
+def main(driver, auto_open_captcha):
     bypass_cf.bypass(driver)
 
     item_count = 0 # tracking the number of items found with the bot
@@ -25,9 +27,9 @@ def main(driver):
         # Start stepping
         print("Stepping...")
         print()
-        
+
         if loot(driver): mat_count += 1
-        if attack(driver): npc_count += 1
+        if attack(driver, auto_open_captcha): npc_count += 1
         if item_check(driver): item_count += 1
         if step(driver): step_count += 1
 
@@ -35,35 +37,49 @@ def main(driver):
         print(f"{item_count} items found in current session!")
         print(f"{npc_count} NPC killed in current session!")
         print(f"{mat_count} materials looted in current session!")
-        timer(start_time)
+
         print()
+        timer(start_time)
+
+        print()
+        delay_for_verification(time.time())
 
         print("Checking for verification...\n")
-        try:
-            exist_test(driver, 'step')
-        except StaleElementReferenceException:
-            driver.save_screenshot('screenshot.png')
+        captcha = None
+        if exist_test(driver, 'step', captcha):
+            notify_captcha(captcha, auto_open_captcha)
+
         status = status_check()
         if status == 'stop':
             break
-        delay_for_verification(time.time())
 
 if __name__ == '__main__':
     option_headless = False
-    if len(sys.argv[1]) > 1:
-        option_headless = True
+    auto_open_captcha = False
+    argc = len(sys.argv[1])
+    if argc > 1:
+        for i in range(2, argc):
+            if argv[i] == "headless":
+                option_headless = True
+            if argv[i] == "auto_open_captcha":
+                auto_open_captcha = True
 
     undetected = False
-    while not undetected:
+    try_count = 0
+    BYPASS_LIMIT = 3
+    while not undetected and try_count < BYPASS_LIMIT:
         driver = Driver(uc=True, headless2=option_headless)
         try:
-            main(driver)
+            main(driver, auto_open_captcha)
             undetected = True
         except TimeoutException:
             undetected = False
             print("bypass unsuccessful, closing and trying again")
+            try_count += 1
+            if try_count >= BYPASS_LIMIT:
+                print("bypass took too many tries, ensure that you have a stable connection")
         finally:
             driver.quit()
-            print("Quited driver")
+            print("quited driver")
 
-    print("Stopped script")
+    print("stopping script\n")
