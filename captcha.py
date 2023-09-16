@@ -16,6 +16,7 @@ def delay_for_verification(start_time):
         time.sleep(1)
 
 def exist_test(driver, captcha_type, captcha):
+    print("Checking for verification...\n")
     try:
         if captcha_type == 'step':
             captcha = driver.find_element(By.XPATH, "(//*[text()='Press here to confirm your existence'])[2]")

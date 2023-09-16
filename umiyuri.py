@@ -44,7 +44,6 @@ def main(driver, auto_open_captcha):
         print()
         delay_for_verification(time.time())
 
-        print("Checking for verification...\n")
         captcha = None
         if exist_test(driver, 'step', captcha):
             notify_captcha(captcha, auto_open_captcha)

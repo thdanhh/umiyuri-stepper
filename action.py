@@ -29,11 +29,11 @@ def attack(driver, auto_open_captcha):
     # exception: NoSuchElementException, StaleElementReferenceException
 
     in_battle = True
-    print("Attacking...")
     attack = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
     )
     while in_battle == True and status_check() != 'stop':
+        print("Attacking...")
         attack.click()
         time.sleep(0.5)
 
