@@ -44,16 +44,15 @@ delete = sl.button('Delete items screenshots')
 #     sl.session_state['first_run'] = write_status_to_txt('stop')
 
 if read_status_from_txt() != 'captcha':
-    args = ""
+    args = []
     if auto_open_captcha:
-        args += ("auto_open_captcha") + " "
+        args.append("auto_open_captcha")
 
     if start:
         write_txt("info.txt", 1, f"{email}\n")
         write_txt("info.txt", 2, f"{password}\n")
         write_status_to_txt('running')
 
-        args_string = ""
         proc = start_subprocess("umiyuri.py", args=args)
         sl.success('Umiyuri Stepper started')
 
@@ -62,7 +61,9 @@ if read_status_from_txt() != 'captcha':
         write_txt("info.txt", 2, f"{password}\n")
         write_status_to_txt('running')
 
-        proc = start_subprocess("umiyuri.py", args=args+"headless"+" ")
+        args.append("headless")
+
+        proc = start_subprocess("umiyuri.py", args=args)
         sl.success('Umiyuri Stepper started')
 
     if resume:

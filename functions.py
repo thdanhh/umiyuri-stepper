@@ -36,9 +36,9 @@ def timer(start_time):
     print("Umiyuri Stepper has been running for %02d:%02d:%02d" % (hours, mins, secs))
 
 @sl.cache_resource
-def start_subprocess(file, args=""):
+def start_subprocess(file, args=[]):
     print("starting subprocess")
-    return subprocess.Popen(["python", file, args])
+    return subprocess.Popen(["python", file] + args)
 
 # @sl.cache_data
 # def write_status():
