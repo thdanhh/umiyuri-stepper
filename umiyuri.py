@@ -85,15 +85,8 @@ def main():
             else:
                 raise
 
-        except Exception as error:
-            print()
-            prRed("An error occurred: ")
-            print(error)
-            print("Saving a screenshot of the browser when the exception occurred")
-            driver.save_screenshot("screenshot.png")
-            print("quiting driver from exception")
-            driver.quit()
-            return
+        except:
+            raise
 
         print("quiting driver")
         driver.quit()
