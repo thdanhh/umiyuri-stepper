@@ -34,6 +34,7 @@ def get_time_elapsed_from(start_time):
     mins, secs = divmod(time.time() - start_time, 60)
     hours, mins = divmod(mins, 60)
     print("Umiyuri Stepper has been running for %02d:%02d:%02d" % (hours, mins, secs))
+    return {f"Umiyuri Stepper has been running for {hours}-{mins}-{secs}"}
 
 @sl.cache_resource
 def start_subprocess(file, args=[]):

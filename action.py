@@ -14,23 +14,25 @@ from functions import write_txt
 import winsound
 from status import status_check
 
-# UmiyuriStepper.attack()
-def attack(self):
-    in_battle = False
-
-    # Find enemy
+# Umiyuri.find_enemy
+def find_enemy_while_stepping(self):
     try:
         enemy = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Attack')]")
     except NoSuchElementException:
         return False
     print("NPC found! Battle started!")
     enemy.click()
-    in_battle = True
     time.sleep(2)
+    self.attack()
+    return True
+
+# UmiyuriStepper.attack()
+def attack(self):
+    in_battle = True
 
     # Find attack button
     attack = WebDriverWait(self.driver, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'Attack')]"))
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Attack')]"))
     )
     while in_battle == True:
         # Check for script stop signal
@@ -41,6 +43,10 @@ def attack(self):
         # Click the attack button
         print("Attacking...")
         attack.click()
+
+        attack = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Attack')]"))
+        )
         time.sleep(0.5)
 
         # Enemy's hp
@@ -54,6 +60,7 @@ def attack(self):
             # Check for captcha
             if self.captcha_handler.exist_test('battle'):
                 self.captcha_handler.notify_captcha()
+                self.driver.get("https://web.simple-mmo.com/travel")
                 return True
 
             # End battle
@@ -64,7 +71,9 @@ def attack(self):
             print("Battle ended!")
             print()
             in_battle = False
-
+        # Check for captcha
+        if self.captcha_handler.exist_test('battle'):
+            self.captcha_handler.notify_captcha()
         time.sleep(1)
     return True
 
@@ -90,7 +99,7 @@ def loot(self):
 def step(self):
     try:
         step_button = WebDriverWait(self.driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
+            EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
         )
     except:
         return False

@@ -16,10 +16,13 @@ from captcha import CaptchaHandler
 class UmiyuriStepper():
     # Predefined methods
     bypass = bypass_cf.bypass
+
     attack = action.attack
+    find_enemy_while_stepping = action.find_enemy_while_stepping
     loot = action.loot
     step = action.step
     item_check = action.item_check
+
     open_in_new_tab = action.open_in_new_tab
 
     def parse_arguments(self):
@@ -53,10 +56,10 @@ class UmiyuriStepper():
                         print("bypass took too many tries, ensure that you have a stable connection")
                         break
                 else:
-                    self.driver.save_screenshot("screenshot.png")
+                    self.driver.save_screenshot(f"{get_time_elapsed_from(self.start_time)}.png")
                     raise
             except:
-                self.driver.save_screenshot("screenshot.png")
+                self.driver.save_screenshot(f"{get_time_elapsed_from(self.start_time)}.png")
                 raise
 
             print("quiting driver")
@@ -87,7 +90,7 @@ class UmiyuriStepper():
             print()
 
             if self.loot(): self.item_count += 1
-            if self.attack(): self.npc_count += 1
+            if self.find_enemy_while_stepping(): self.npc_count += 1
             if self.item_check(): self.item_count += 1
             if self.step(): self.step_count += 1
 
