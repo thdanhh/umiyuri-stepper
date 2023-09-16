@@ -80,12 +80,12 @@ def attack(self):
 # UmiyuriStepper.loot()
 def loot(self):
     try:
-        gather = driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
+        gather = self.driver.find_element(By.XPATH, '//button[@class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"]')
     except:
         return False
     gather.click()
     print("Material found!")
-    craft = driver.find_element(By.XPATH, '//button[@id="crafting_button"]')
+    craft = self.driver.find_element(By.XPATH, '//button[@id="crafting_button"]')
     print("Looting...")
     while not craft.text.strip() == "Press here to close":
         craft.click()
