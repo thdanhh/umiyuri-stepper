@@ -4,8 +4,6 @@ import time
 import random
 import string
 import psutil
-from win10toast import ToastNotifier
-from win11toast import toast
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By

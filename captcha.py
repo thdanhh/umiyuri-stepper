@@ -4,8 +4,6 @@ import os
 import winsound
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
-from win10toast import ToastNotifier
-from win11toast import toast
 from status import status_check, write_status_to_txt, read_status_from_txt
 
 class CaptchaHandler():

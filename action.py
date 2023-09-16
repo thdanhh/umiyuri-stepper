@@ -8,8 +8,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, TimeoutException
-from win10toast import ToastNotifier
-from win11toast import toast
 from functions import write_txt
 import winsound
 from status import status_check
