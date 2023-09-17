@@ -50,6 +50,7 @@ class CaptchaHandler():
         status = "captcha"
         while status == 'captcha':
             if len(input("Press enter to continue...\n")) >= 0:
+                print("Continuing")
                 status = read_status_from_txt()
                 if status == 'stop' or status == 'paused':
                     return
