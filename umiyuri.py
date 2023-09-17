@@ -86,17 +86,17 @@ class UmiyuriStepper():
         # Update status before entering loop
         self.status = status_check()
         self.start_time = time.time()
+
         # Main loop
         while self.status == "running":
-            # Start stepping
-            print("Stepping...")
-            print()
-
+            # Check for battle and quests
             self.elapsed_time = get_time_elapsed_from(self.start_time)
             if self.elapsed_time % 3600 == 0 or self.elapsed_time < 1:
                 print("Spending EP and QP points if maxed")
                 self.battle()
                 self.quests()
+
+            # Try to perform actions
             if self.loot(): self.item_count += 1
             if self.find_enemy_while_stepping(): self.npc_count += 1
             if self.item_check(): self.item_count += 1
@@ -110,8 +110,8 @@ class UmiyuriStepper():
             print(f"{self.item_count} items found in current session!")
             print(f"{self.npc_count} NPC killed in current session!")
             print(f"{self.item_count} materials looted in current session!")
-
             print()
+
             self.elapsed_time = get_time_elapsed_from(self.start_time)
             print_elapsed_time(self.elapsed_time)
             print()
@@ -121,7 +121,10 @@ class UmiyuriStepper():
             if self.captcha_handler.exist_test('step'):
                 self.captcha_handler.notify_captcha(self.auto_open_captcha)
 
+            print("Checking status")
             self.status = status_check()
+            if self.status == 'stop':
+                print("Stop signal detected, exiting loop")
 
 def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
 

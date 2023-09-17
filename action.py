@@ -105,6 +105,8 @@ def step(self):
     step_button = WebDriverWait(self.driver, MAX_STEP_DELAY).until(
         EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
     )
+    print("Stepping...")
+    print()
     step_button.click()
     return True
 
