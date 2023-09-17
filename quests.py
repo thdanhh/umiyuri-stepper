@@ -43,6 +43,7 @@ def quests(self):
         perform_button.click()
         if self.captcha_handler.exist_test('quests'):
             self.captcha_handler.notify_captcha(self.auto_open_captcha)
+            self.driver.refresh()
         current_qp -= 1
     print("QP emptied, returning to travel page")
     self.driver.get("https://web.simple-mmo.com/travel")
