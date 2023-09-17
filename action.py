@@ -99,20 +99,16 @@ def loot(self):
     time.sleep(2)
     return True
 
+# UmiyuriStepper.step()
 def step(self):
-    step_button = WebDriverWait(self.driver, 10).until(
+    MAX_STEP_DELAY = 20 # Estimated
+    step_button = WebDriverWait(self.driver, MAX_STEP_DELAY).until(
         EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
     )
     step_button.click()
-#     if step_button.is_enabled():
-#         step_button.click()
-#         time.sleep(1)
-#     else:
-#         time.sleep(3)
-#         step_button.click()
     return True
 
-# UmiyuriStepper.item_check
+# UmiyuriStepper.item_check()
 def item_check(self):
     try:
         found_item = self.driver.find_element(By.XPATH, "//*[text()='You have found an item!']")
