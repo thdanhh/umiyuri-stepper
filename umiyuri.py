@@ -88,6 +88,7 @@ class UmiyuriStepper():
         self.start_time = time.time()
 
         self.elapsed_time_lastcycle = 0
+        self.elapsed_time = 0
 
         # Main loop
         while self.status == "running":
