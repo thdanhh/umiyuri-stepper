@@ -46,6 +46,6 @@ def battle(self):
         battle_button.click()
         self.attack()
         current_ep -= 1
-    print("EP emptied, returning to travel page")
+    print("EP emptied, returning to travel page\n")
     self.driver.get("https://web.simple-mmo.com/travel")
     return True
