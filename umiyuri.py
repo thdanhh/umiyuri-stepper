@@ -87,11 +87,17 @@ class UmiyuriStepper():
         self.status = status_check()
         self.start_time = time.time()
 
+        self.elapsed_time_lastcycle = 0
+
         # Main loop
         while self.status == "running":
-            # Check for battle and quests
+            # Update time variable
+            self.elapsed_time_lastcycle = self.elapsed_time
             self.elapsed_time = get_time_elapsed_from(self.start_time)
-            if self.elapsed_time % 3600 == 0 or self.elapsed_time < 1:
+            hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
+
+            if hour_diff > 0 or self.elapsed_time < 1:
+                # Check for battle and quests
                 print("Spending EP and QP points if maxed")
                 self.battle()
                 self.quests()
