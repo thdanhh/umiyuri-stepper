@@ -20,7 +20,6 @@ def bypass(self):
     print("opening login page")
     self.driver.get("https://web.simple-mmo.com/login")
     print("waiting to bypass")
-    time.sleep(4)
 
     try:
         # Wait for the email field to be visible

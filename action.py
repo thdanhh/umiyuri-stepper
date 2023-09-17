@@ -46,7 +46,6 @@ def attack(self):
         attack = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Attack')]"))
         )
-        time.sleep(0.5)
 
         # Enemy's hp
         hp = self.driver.find_element(By.XPATH, "(//div[@class='flex justify-center bg-gradient-to-r from-red-500 to-red-400 h-4 rounded-lg w-36 text-xs text-gray-100 nightwind-prevent text-center ring-1 ring-black ring-opacity-5 shadow-sm transition-all'])[2]")
@@ -73,7 +72,6 @@ def attack(self):
         # Check for captcha
         if self.captcha_handler.exist_test('battle'):
             self.captcha_handler.notify_captcha()
-        time.sleep(1)
     return True
 
 # UmiyuriStepper.loot()
@@ -83,12 +81,18 @@ def loot(self):
     except:
         return False
     gather.click()
+
     print("Material found!")
-    craft = self.driver.find_element(By.XPATH, '//button[@id="crafting_button"]')
+    craft = WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//button[@id="crafting_button"]'))
+    )
+
     print("Looting...")
     while not craft.text.strip() == "Press here to close":
         craft.click()
-        time.sleep(0.5)
+        craft = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//button[@id="crafting_button"]'))
+        )
     print("Material looted!")
     print()
     craft.click()
@@ -96,37 +100,34 @@ def loot(self):
     return True
 
 def step(self):
-    try:
-        step_button = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
-        )
-    except:
-        return False
-    if step_button.is_enabled():
-        step_button.click()
-        time.sleep(1)
-    else:
-        time.sleep(3)
-        step_button.click()
+    step_button = WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
+    )
+    step_button.click()
+#     if step_button.is_enabled():
+#         step_button.click()
+#         time.sleep(1)
+#     else:
+#         time.sleep(3)
+#         step_button.click()
     return True
 
 # UmiyuriStepper.item_check
 def item_check(self):
     try:
         found_item = self.driver.find_element(By.XPATH, "//*[text()='You have found an item!']")
-    except:
+    except NoSuchElementException:
         return False
-    if found_item.text.strip() == "You have found an item!":
-        print("You found an item!")
-        rand_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        file_name = (f'item_{rand_str}.png')
-        print(f"Item found! Don't forget to check your inventory. Screenshot saved.")
-        folder_path = os.path.join(os.getcwd(), 'pages/items')
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        file_path = os.path.join(folder_path, file_name)
-        self.driver.save_screenshot(file_path)
-        return True
+
+    print(f"Item found! Don't forget to check your inventory. Screenshot saved.")
+    rand_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    file_name = (f'item_{rand_str}.png')
+    folder_path = os.path.join(os.getcwd(), 'pages/items')
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    file_path = os.path.join(folder_path, file_name)
+    self.driver.save_screenshot(file_path)
+    return True
 
 # UmiyuriStepper.open_in_new_tab()
 # open new tab with link containing element specified in argument

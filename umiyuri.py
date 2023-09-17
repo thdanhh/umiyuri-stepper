@@ -60,10 +60,10 @@ class UmiyuriStepper():
                         print("bypass took too many tries, ensure that you have a stable connection")
                         break
                 else:
-                    self.driver.save_screenshot(f"{int(time.time())}.png")
+                    self.driver.save_screenshot("screenshot.png")
                     raise
             except:
-                self.driver.save_screenshot(f"{int(time.time())}.png")
+                self.driver.save_screenshot("screenshot.png")
                 raise
 
             print("quiting driver")
