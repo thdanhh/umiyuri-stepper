@@ -23,7 +23,7 @@ class EnergyQuestPointsManager:
 
         if not ep_is_maxed and not qp_is_maxed:
             print("EP and QP is not maxed, returning to travel page")
-            self.driver.get("https://web.simple-mmo.com/travel")
+            self.driver.get("https://web.simple-mmo.com/travel?new_page=true?new_page=true")
             return "continue"
 
         print("Spending points...")
@@ -37,7 +37,7 @@ class EnergyQuestPointsManager:
                 return "stop"
 
         print("Returning to travel page")
-        self.driver.get("https://web.simple-mmo.com/travel")
+        self.driver.get("https://web.simple-mmo.com/travel?new_page=true")
         return "continue"
 
     def check_for_maxed_points(self):
