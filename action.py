@@ -102,9 +102,12 @@ def loot(self):
 # UmiyuriStepper.step()
 def step(self):
     MAX_STEP_DELAY = 20 # Estimated
-    step_button = WebDriverWait(self.driver, MAX_STEP_DELAY).until(
-        EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
-    )
+    try:
+        step_button = WebDriverWait(self.driver, MAX_STEP_DELAY).until(
+            EC.element_to_be_clickable((By.XPATH, '(//button[starts-with(@id, "step_btn_")])[3]'))
+        )
+    except TimeoutException:
+        self.driver.refresh()
     print("Stepping...")
     print()
     step_button.click()
