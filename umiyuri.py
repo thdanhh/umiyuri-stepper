@@ -7,11 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, NoSuchElementException
 
-import spend
+from spend import EnergyQuestPointsManager
 import bypass_cf
 import action
 from functions import get_time_elapsed_from, print_elapsed_time
-from status import status_check
+from status import status_check, check_for_stop
 from captcha import CaptchaHandler
 
 class UmiyuriStepper():
@@ -23,7 +23,6 @@ class UmiyuriStepper():
     loot = action.loot
     step = action.step
     item_check = action.item_check
-    spend_points = spend.spend_points
 
     open_in_new_tab = action.open_in_new_tab
 
@@ -51,7 +50,7 @@ class UmiyuriStepper():
             except TimeoutException as timeout_err:
                 if timeout_err.msg == "Bypass failed":
                     undetected = False
-                    print("bypass unsuccessful, closing and trying again")
+                    print("bypass unsuccessful, quiting driver and trying again")
 
                     try_count += 1
                     if try_count >= BYPASS_LIMIT:
@@ -73,8 +72,9 @@ class UmiyuriStepper():
         # Attempt to bypass
         self.bypass()
 
-        # Initialize captcha handler
+        # Initialize inner classes
         self.captcha_handler = CaptchaHandler(self.driver)
+        self.eqp_manager = EnergyQuestPointsManager(self.driver, self.captcha_handler)
 
         self.item_count = 0 # tracking the number of items found with the bot
         self.step_count = 0 # tracking the number of steps taken with the bot
@@ -93,12 +93,20 @@ class UmiyuriStepper():
             # Update time variable
             self.elapsed_time_lastcycle = self.elapsed_time
             self.elapsed_time = get_time_elapsed_from(self.start_time)
-            hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
 
+            print_elapsed_time(self.elapsed_time)
+            print()
+
+            hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
             if hour_diff > 0 or self.elapsed_time < 1:
-                # Check for battle and quests
+                # Check for EP and QP
                 print("Spending EP and QP points if maxed...")
-                self.spend_points()
+                if self.eqp_manager.spend_points() == "stop":
+                    print("Stop signal dectected, exiting main loop")
+                    break
+
+            if check_for_stop():
+                break
 
             # Try to perform actions
             if self.loot(): self.item_count += 1
@@ -106,18 +114,10 @@ class UmiyuriStepper():
             if self.item_check(): self.item_count += 1
             if self.step(): self.step_count += 1
 
-            self.status = status_check()
-            if self.status == 'stop':
-                break
-
             print(f"{self.step_count} steps taken in current session!")
             print(f"{self.item_count} items found in current session!")
             print(f"{self.npc_count} NPC killed in current session!")
             print(f"{self.item_count} materials looted in current session!")
-            print()
-
-            self.elapsed_time = get_time_elapsed_from(self.start_time)
-            print_elapsed_time(self.elapsed_time)
             print()
 
             self.captcha_handler.delay_for_verification(time.time())
@@ -128,7 +128,7 @@ class UmiyuriStepper():
             print("Checking status")
             self.status = status_check()
             if self.status == 'stop':
-                print("Stop signal detected, exiting loop")
+                print("Stop signal detected, exiting main loop")
 
 def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
 

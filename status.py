@@ -18,3 +18,11 @@ def status_check():
             if status != 'paused':
                 break
     return status
+
+def check_for_stop():
+    status = read_status_from_txt()
+    if status == "stop":
+        print("Received stop signal, exiting current action")
+        return True
+    else:
+        return False

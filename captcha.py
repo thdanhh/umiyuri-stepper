@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from status import status_check, write_status_to_txt, read_status_from_txt
 
-class CaptchaHandler():
+class CaptchaHandler:
     def __init__(self, driver):
         self.driver = driver
 
