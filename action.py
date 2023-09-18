@@ -108,6 +108,7 @@ def step(self):
         )
     except TimeoutException:
         self.driver.refresh()
+        return False
     print("Stepping...")
     print()
     step_button.click()

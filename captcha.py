@@ -32,7 +32,7 @@ class CaptchaHandler:
         except NoSuchElementException or StaleElementReferenceException:
             return False
 
-    def notify_captcha():
+    def notify_captcha(self):
         # Automatically open verify page on browser
         if self.auto_open_captcha:
             os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
