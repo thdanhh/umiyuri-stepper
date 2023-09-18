@@ -7,8 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, NoSuchElementException
 
-import battle
-import quests
+import spend
 import bypass_cf
 import action
 from functions import get_time_elapsed_from, print_elapsed_time
@@ -24,8 +23,7 @@ class UmiyuriStepper():
     loot = action.loot
     step = action.step
     item_check = action.item_check
-    battle = battle.battle
-    quests = quests.quests
+    spend_points = spend.spend_points
 
     open_in_new_tab = action.open_in_new_tab
 
@@ -99,9 +97,8 @@ class UmiyuriStepper():
 
             if hour_diff > 0 or self.elapsed_time < 1:
                 # Check for battle and quests
-                print("Spending EP and QP points if maxed")
-                self.battle()
-                self.quests()
+                print("Spending EP and QP points if maxed...")
+                self.spend_points()
 
             # Try to perform actions
             if self.loot(): self.item_count += 1
