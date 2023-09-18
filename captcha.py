@@ -7,8 +7,9 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 from status import status_check, write_status_to_txt, read_status_from_txt
 
 class CaptchaHandler:
-    def __init__(self, driver):
+    def __init__(self, driver, auto_open_captcha):
         self.driver = driver
+        self.auto_open_captcha = auto_open_captcha
 
     def delay_for_verification(self, start_time):
         delay = random.randint(5, 10)
@@ -31,9 +32,9 @@ class CaptchaHandler:
         except NoSuchElementException or StaleElementReferenceException:
             return False
 
-    def notify_captcha(self, auto_open_captcha):
+    def notify_captcha():
         # Automatically open verify page on browser
-        if auto_open_captcha:
+        if self.auto_open_captcha:
             os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
 
         print("Captcha found, solve the captcha to continue.")

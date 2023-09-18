@@ -9,12 +9,11 @@ from action import attack as _attack
 class EnergyQuestPointsManager:
     attack = _attack
 
-    def __init__(self, driver, captcha_handler, auto_open_captcha):
+    def __init__(self, driver, captcha_handler):
         self.driver = driver
         self.captcha_handler = captcha_handler
         self.current_ep = 0
         self.current_qp = 0
-        self.auto_open_captcha = auto_open_captcha
 
     def spend_points(self):
         ep_is_maxed, qp_is_maxed = self.check_for_maxed_points()
@@ -133,7 +132,7 @@ class EnergyQuestPointsManager:
             time.sleep(1)
             perform_button.click()
             if self.captcha_handler.exist_test('quests'):
-                self.captcha_handler.notify_captcha(self.auto_open_captcha)
+                self.captcha_handler.notify_captcha()
                 self.driver.refresh()
             self.current_qp -= 1
             print(f'QP: {self.current_qp} left')

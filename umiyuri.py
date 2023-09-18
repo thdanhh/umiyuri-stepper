@@ -73,8 +73,13 @@ class UmiyuriStepper():
         self.bypass()
 
         # Initialize inner classes
+<<<<<<< Updated upstream
         self.captcha_handler = CaptchaHandler(self.driver)
         self.eqp_manager = EnergyQuestPointsManager(self.driver, self.captcha_handler, self.auto_open_captcha)
+=======
+        self.captcha_handler = CaptchaHandler(self.driver, self.auto_open_captcha)
+        self.eqp_manager = EnergyQuestPointsManager(self.driver, self.captcha_handler)
+>>>>>>> Stashed changes
 
         self.item_count = 0 # tracking the number of items found with the bot
         self.step_count = 0 # tracking the number of steps taken with the bot
@@ -123,7 +128,7 @@ class UmiyuriStepper():
             self.captcha_handler.delay_for_verification(time.time())
 
             if self.captcha_handler.exist_test('step'):
-                self.captcha_handler.notify_captcha(self.auto_open_captcha)
+                self.captcha_handler.notify_captcha()
 
             print("Checking status")
             self.status = status_check()
