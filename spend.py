@@ -22,8 +22,7 @@ class EnergyQuestPointsManager:
             return "stop"
 
         if not ep_is_maxed and not qp_is_maxed:
-            print("EP and QP is not maxed, returning to travel page")
-            self.driver.get("https://web.simple-mmo.com/travel?new_page=true")
+            print("EP and QP is not maxed")
             return "continue"
 
         print("Spending points...")
@@ -41,18 +40,19 @@ class EnergyQuestPointsManager:
         return "continue"
 
     def check_for_maxed_points(self):
-        print("checking current amount of points")
-        self.driver.get("https://web.simple-mmo.com/user/character")
+        user_menu = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[1]/button[2]')
+        user_menu.click()
+        print("checking current amount of points...")
         time.sleep(1)
         return self.check_for_maxed_ep(), self.check_for_maxed_qp()
 
     def check_for_maxed_ep(self):
-        max_ep = self.driver.find_element(By.XPATH, '(//span[@class="text-gray-300 font-medium"])[3]').text
-        max_ep_len = len(max_ep)
-        max_ep = int(re.sub("[^0-9]", "", max_ep))
+        max_ep = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[2]/div/div[3]/div/div/span[2]/div[2]/div[2]/div[2]/p/span[2]/span').text
+        # max_ep_len = len(max_ep)
+        max_ep = int(max_ep)
 
-        current_ep = self.driver.find_element(By.XPATH, f'/html/body/div[1]/div[3]/main/div[2]/div[1]/div[9]/div[2]/div[1]/div[2]/dd/div/div[1]').text
-        self.current_ep = int(re.sub("[^0-9]", "", current_ep[:-max_ep_len]))
+        current_ep = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[2]/div/div[3]/div/div/span[2]/div[2]/div[2]/div[2]/p/span[1]').text
+        self.current_ep = int(current_ep)
 
         if max_ep != self.current_ep:
             print("current EP is not maxed")
@@ -63,12 +63,11 @@ class EnergyQuestPointsManager:
             return True
 
     def check_for_maxed_qp(self):
-        max_qp = self.driver.find_element(By.XPATH, '(//span[@class="text-gray-300 font-medium"])[2]').text
-        max_qp_len = len(max_qp)
-        max_qp = int(re.sub("[^0-9]", "", max_qp))
+        max_qp = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[2]/div/div[3]/div/div/span[3]/div[2]/div[2]/div[2]/p/span[2]/span').text
+        max_qp = int(max_qp)
 
-        current_qp = self.driver.find_element(By.XPATH, f'/html/body/div[1]/div[3]/main/div[2]/div[1]/div[9]/div[1]/div[2]/div[2]/dd/div/div[1]').text
-        self.current_qp = int(re.sub("[^0-9]", "", current_qp[:-max_qp_len]))
+        current_qp = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[2]/div/div[3]/div/div/span[3]/div[2]/div[2]/div[2]/p/span[1]').text
+        self.current_qp = int(current_qp)
 
         if max_qp != self.current_qp:
             print("current QP is not maxed")

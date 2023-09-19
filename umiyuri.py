@@ -85,25 +85,26 @@ class UmiyuriStepper():
         self.status = status_check()
         self.start_time = time.time()
 
-        self.elapsed_time_lastcycle = 0
+        # self.elapsed_time_lastcycle = 0
         self.elapsed_time = 0
 
         # Main loop
         while self.status == "running":
             # Update time variable
-            self.elapsed_time_lastcycle = self.elapsed_time
+            # self.elapsed_time_lastcycle = self.elapsed_time
             self.elapsed_time = get_time_elapsed_from(self.start_time)
 
             print_elapsed_time(self.elapsed_time)
             print()
 
-            hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
-            if hour_diff > 0 or self.elapsed_time < 1:
-                # Check for EP and QP
-                print("Spending EP and QP points if maxed...")
-                if self.eqp_manager.spend_points() == "stop":
-                    print("Stop signal dectected, exiting main loop")
-                    break
+            # hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
+            # if hour_diff > 0 or self.elapsed_time < 1:
+
+            # Check for EP and QP
+            print("Spending EP and QP points if maxed...")
+            if self.eqp_manager.spend_points() == "stop":
+                print("Stop signal dectected, exiting main loop")
+                break
 
             if check_for_stop():
                 break
