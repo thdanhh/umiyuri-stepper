@@ -20,13 +20,11 @@ def find_enemy_while_stepping(self):
         return False
     print("NPC found! Battle started!")
     enemy.click()
-    time.sleep(2)
     self.attack()
     return True
 
 # UmiyuriStepper.attack()
 def attack(self):
-    print("Entering battle")
     in_battle = True
 
     # Find attack button

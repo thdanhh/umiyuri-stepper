@@ -16,16 +16,15 @@ class EnergyQuestPointsManager:
         self.current_qp = 0
 
     def spend_points(self):
+        print("Spending EP and QP points if maxed...")
         ep_is_maxed, qp_is_maxed = self.check_for_maxed_points()
 
         if check_for_stop():
             return "stop"
 
         if not ep_is_maxed and not qp_is_maxed:
-            print("EP and QP is not maxed")
+            print("EP and QP is not maxed, continuing to step\n")
             return "continue"
-
-        print("Spending points...")
 
         if ep_is_maxed:
             if not self.spend_ep():
@@ -42,7 +41,6 @@ class EnergyQuestPointsManager:
     def check_for_maxed_points(self):
         user_menu = self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/nav/div/div/div[2]/div[3]/div[1]/button[2]')
         user_menu.click()
-        print("checking current amount of points...")
         time.sleep(1)
         return self.check_for_maxed_ep(), self.check_for_maxed_qp()
 
@@ -55,7 +53,6 @@ class EnergyQuestPointsManager:
         self.current_ep = int(current_ep)
 
         if max_ep != self.current_ep:
-            print("current EP is not maxed")
             ep_max = False
             time.sleep(0.5)
             return False
@@ -70,7 +67,6 @@ class EnergyQuestPointsManager:
         self.current_qp = int(current_qp)
 
         if max_qp != self.current_qp:
-            print("current QP is not maxed")
             qp_max = False
             time.sleep(0.5)
             return False
@@ -78,7 +74,8 @@ class EnergyQuestPointsManager:
             return True
 
     def spend_ep(self):
-        time.sleep(0.5)
+        print("Spending EP")
+        time.sleep(0.25)
         print("Navigating to arena")
         self.driver.get("https://web.simple-mmo.com/battle/arena")
         time.sleep(0.5)
@@ -110,8 +107,9 @@ class EnergyQuestPointsManager:
         return True
 
     def spend_qp(self):
+        print("Spending QP")
+        time.sleep(0.25)
         print("Navigating to quests page")
-        time.sleep(0.5)
         self.driver.get("https://web.simple-mmo.com/quests/viewall")
         time.sleep(0.5)
 
