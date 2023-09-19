@@ -32,13 +32,14 @@ class CaptchaHandler:
         except NoSuchElementException or StaleElementReferenceException:
             return False
 
-    def notify_captcha(self):
+    def notify_captcha(self, link):
         # Automatically open verify page on browser
         if self.auto_open_captcha:
             os.system("start \"\" https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
 
         print("Captcha found, solve the captcha to continue.")
-        print("https://web.simple-mmo.com/i-am-not-a-bot")
+        print("https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
+        self.driver.get("https://web.simple-mmo.com/i-am-not-a-bot?new_page=true")
 
         alert_sound = lambda: winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
         alert_sound()
@@ -49,11 +50,21 @@ class CaptchaHandler:
 
         write_status_to_txt("captcha")
         status = "captcha"
-        while status == 'captcha':
-            if len(input("Press enter to continue...\n")) >= 0:
-                print("Continuing")
+        captcha_solved = False
+        while status == 'captcha': 
+            try:
+                time.sleep(1)
+                self.driver.refresh()
+                verified_text = self.driver.find_element(By.XPATH, '//*[contains(text(), "You have passed.")]')
+                captcha_solved = True
+            except NoSuchElementException:
+                pass
+            if captcha_solved:
+                print("Captcha solved, continuing...")
+                print()
                 status = read_status_from_txt()
                 if status == 'stop' or status == 'paused':
                     return
                 write_status_to_txt("running")
+                self.driver.get(link)
                 return

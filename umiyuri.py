@@ -109,7 +109,7 @@ class UmiyuriStepper():
             if self.eqp_manager.spend_points() == "stop":
                 print("Stop signal dectected, exiting main loop")
                 break
-            
+
             if self.step(): self.step_count += 1
 
             print(f"{self.step_count} steps taken in current session!")
@@ -121,7 +121,7 @@ class UmiyuriStepper():
             self.captcha_handler.delay_for_verification(time.time())
 
             if self.captcha_handler.exist_test('step'):
-                self.captcha_handler.notify_captcha()
+                self.captcha_handler.notify_captcha("https://web.simple-mmo.com/travel?new_page=true")
 
             print("Checking status")
             self.status = status_check()
