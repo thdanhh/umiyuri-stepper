@@ -100,12 +100,6 @@ class UmiyuriStepper():
             # hour_diff = int(self.elapsed_time / 3600) - int(self.elapsed_time_lastcycle / 3600)
             # if hour_diff > 0 or self.elapsed_time < 1:
 
-            # Check for EP and QP
-            print("Spending EP and QP points if maxed...")
-            if self.eqp_manager.spend_points() == "stop":
-                print("Stop signal dectected, exiting main loop")
-                break
-
             if check_for_stop():
                 break
 
@@ -113,6 +107,13 @@ class UmiyuriStepper():
             if self.loot(): self.item_count += 1
             if self.find_enemy_while_stepping(): self.npc_count += 1
             if self.item_check(): self.item_count += 1
+
+            # Check for EP and QP
+            print("Spending EP and QP points if maxed...")
+            if self.eqp_manager.spend_points() == "stop":
+                print("Stop signal dectected, exiting main loop")
+                break
+            
             if self.step(): self.step_count += 1
 
             print(f"{self.step_count} steps taken in current session!")
