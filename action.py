@@ -56,7 +56,6 @@ def attack(self):
             # Check for captcha
             if self.captcha_handler.exist_test('battle'):
                 self.captcha_handler.notify_captcha("https://web.simple-mmo.com/travel?new_page=true")
-                self.driver.get("https://web.simple-mmo.com/travel?new_page=true")
                 return True
 
             # End battle
