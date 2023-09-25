@@ -101,7 +101,7 @@ class UmiyuriStepper():
             # if hour_diff > 0 or self.elapsed_time < 1:
 
             # Try to perform actions
-            if self.loot(): self.item_count += 1
+            if self.loot(): self.mat_count += 1
             if self.item_check(): self.item_count += 1
             if self.find_enemy_while_stepping(): self.npc_count += 1
 
@@ -115,7 +115,7 @@ class UmiyuriStepper():
             print(f"{self.step_count} steps taken in current session!")
             print(f"{self.item_count} items found in current session!")
             print(f"{self.npc_count} NPC killed in current session!")
-            print(f"{self.item_count} materials looted in current session!")
+            print(f"{self.mat_count} materials looted in current session!")
             print()
 
             self.captcha_handler.delay_for_verification(time.time())
